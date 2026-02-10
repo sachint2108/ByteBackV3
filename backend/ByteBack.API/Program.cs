@@ -11,6 +11,7 @@ builder.Services.AddCors(options => {
     });
 });
 
+
 builder.Services.AddSingleton<FirestoreDb>(s => {
     string projectId = "byteback-6bb5d"; 
     
@@ -33,7 +34,6 @@ var app = builder.Build();
 
 app.UseCors("AllowFrontend");
 
-app.MapGet("/", () => "ByteBack API is live and running!");
 
 app.MapGet("/api/products", async (FirestoreDb db) => {
     try {
@@ -54,3 +54,6 @@ app.MapGet("/api/products", async (FirestoreDb db) => {
 });
 
 app.Run();
+
+//Cors Policy to allow requests from the React frontend, both locally and on Render. 
+//Adjust the URLs as needed for your deployment.

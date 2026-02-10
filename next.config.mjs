@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -12,10 +14,12 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'www.istore.co.za', // Added iStore for your Apple product images
+        hostname: 'www.istore.co.za',
       },
     ],
   },
 };
 
 export default nextConfig;
+
+//note: export is required for performance reasons on a static site
