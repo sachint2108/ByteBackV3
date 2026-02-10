@@ -1,0 +1,20 @@
+# --- Frontend / Next.js ---
+node_modules/
+.next/
+out/
+.env*.local
+npm-debug.log*
+
+# --- Backend / C# (.NET) ---
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+.vs/
+*.user
+*.suo
+*.sln.ids
+*.db
+
+# --- SECRETS (ByteBack specific) ---
+backend/ByteBack.API/firebase-key.json
