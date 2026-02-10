@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowFrontend", policy => {
-        policy.WithOrigins("http://localhost:3000") 
+        policy.WithOrigins("http://localhost:3000", "https://your-frontend-name.onrender.com") 
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -15,13 +14,20 @@ builder.Services.AddCors(options => {
 builder.Services.AddSingleton<FirestoreDb>(s => {
     string projectId = "byteback-6bb5d"; 
     
-    string keyPath = Path.Combine(Directory.GetCurrentDirectory(), "firebase-key.json");
+    string? jsonConfig = Environment.GetEnvironmentVariable("FIREBASE_CONFIG_JSON");
 
-    return new FirestoreDbBuilder
-    {
-        ProjectId = projectId,
-        CredentialsPath = keyPath
-    }.Build();
+    if (!string.IsNullOrEmpty(jsonConfig)) {
+        return new FirestoreDbBuilder {
+            ProjectId = projectId,
+            JsonCredentials = jsonConfig
+        }.Build();
+    } else {
+        string keyPath = Path.Combine(Directory.GetCurrentDirectory(), "firebase-key.json");
+        return new FirestoreDbBuilder {
+            ProjectId = projectId,
+            CredentialsPath = keyPath
+        }.Build();
+    }
 });
 
 var app = builder.Build();
@@ -45,4 +51,5 @@ app.MapGet("/api/products", async (FirestoreDb db) => {
         return Results.Problem($"Firestore Error: {ex.Message}");
     }
 });
+
 app.Run();
