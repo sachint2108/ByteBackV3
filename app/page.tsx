@@ -10,3 +10,6 @@ export default function Home() {
     </>
   );
 }
+
+/*note: This is the main page component for the homepage of the ByteBack Shop. */
+

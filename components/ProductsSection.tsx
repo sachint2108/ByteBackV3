@@ -1,3 +1,6 @@
+/*note: This component is responsible for displaying the products section on the homepage. 
+It fetches the products from the product service and renders them using the ProductItem component. The section is styled with a gradient background and responsive grid layout to ensure a visually appealing presentation of the products.*/
+
 import React from "react";
 import ProductItem from "./ProductItem";
 import { productService } from "@/services/productService";
@@ -6,9 +9,9 @@ const ProductsSection = async () => {
   const products = await productService.getAllProducts();
 
   return (
-    <div className="bg-blue-50 py-10">
+    <div className="bg-gradient-to-l from-white to-black-600 py-10">
       <div className="max-w-screen-2xl mx-auto px-16 max-md:px-6">
-        <h2 className="text-4xl font-bold text-center mb-10 text-black">
+        <h2 className="text-4xl font-bold text-center mb-10 text-white">
           New Arrivals
         </h2>
         

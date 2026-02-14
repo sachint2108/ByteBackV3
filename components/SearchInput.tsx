@@ -1,12 +1,5 @@
-// *********************
 // Role of the component: Search input element located in the header but it can be used anywhere in your application
 // Name of the component: SearchInput.tsx
-// Developer: Aleksandar Kuzmanovic
-// Version: 1.0
-// Component call: <SearchInput />
-// Input parameters: no input parameters
-// Output: form with search input and button
-// *********************
 
 "use client";
 import { useRouter } from "next/navigation";
@@ -17,28 +10,30 @@ const SearchInput = () => {
   const [searchInput, setSearchInput] = useState<string>("");
   const router = useRouter();
 
-  // function for modifying URL for searching products
   const searchProducts = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Sanitize the search input before using it in URL
+
     const sanitizedSearch = sanitize(searchInput);
     router.push(`/search?search=${encodeURIComponent(sanitizedSearch)}`);
     setSearchInput("");
   };
 
   return (
-    <form className="flex w-full justify-center" onSubmit={searchProducts}>
-      <input
-        type="text"
-        value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
-        placeholder="Type here"
-        className="bg-gray-50 input input-bordered w-[70%] rounded-r-none outline-none focus:outline-none max-sm:w-full"
-      />
-      <button type="submit" className="btn bg-blue-500 text-white rounded-l-none rounded-r-xl hover:bg-blue-600">
-        Search
-      </button>
-    </form>
+    <form className="flex w-full justify-center group" onSubmit={searchProducts}>
+  <input
+    type="text"
+    value={searchInput}
+    onChange={(e) => setSearchInput(e.target.value)}
+    placeholder="Search for iPhones, MacBooks..."
+    className="bg-gray-50 input input-bordered w-[70%] rounded-l-full rounded-r-none border-r-0 outline-none focus:outline-none focus:border-gray-300 transition-all px-6 max-sm:w-full"
+  />
+  <button 
+    type="submit" 
+    className="btn bg-gray-300 text-gray-700 border-l-0 border-gray-300 rounded-l-none rounded-r-full hover:bg-gray-300 hover:border-gray-400 px-8 transition-colors font-semibold"
+  >
+    Search
+  </button>
+</form>
   );
 };
 

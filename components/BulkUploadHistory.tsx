@@ -1,12 +1,7 @@
 // *********************
 // Role of the component: Display bulk upload batch history
 // Name of the component: BulkUploadHistory.tsx
-// Developer: Custom
-// Version: 1.0
-// Component call: <BulkUploadHistory />
-// Input parameters: no input parameters
-// Output: list of bulk upload batches with details
-// *********************
+
 
 "use client";
 import React, { useEffect, useState } from "react";

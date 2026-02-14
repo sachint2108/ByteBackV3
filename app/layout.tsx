@@ -1,5 +1,4 @@
 import "./globals.css";
-// Keep your other css imports if they are there (like svgmap)
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Providers from "@/Providers";

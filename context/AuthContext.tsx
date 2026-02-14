@@ -1,7 +1,9 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { auth, db } from "@/firebase/config";
+import { onAuthStateChanged, signOut } from "firebase/auth"
+import { doc, getDoc } from "firebase/firestore";
 
-// 1. Updated Interface to include 'logout'
 interface AuthContextType {
   user: any; 
   loading: boolean;
@@ -26,9 +28,11 @@ export const AuthContextProvider = ({
 
   const logout = async () => {
     try {
+      await signOut(auth);
       setUser(null);
-      localStorage.removeItem("byteback_token"); 
-      console.log("C# session cleared");
+      localStorage.removeItem("byteback_token");
+      setUser(null); 
+      console.log("Logged out everywhere");
     } catch (error) {
       console.error("Logout error", error);
     }
@@ -36,23 +40,32 @@ export const AuthContextProvider = ({
 
 
   useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        const response = await fetch("http://localhost:5021/api/auth/me");
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data);
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
+  
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setLoading(true);
+      if (user) {
+        try {
 
-    checkAuthStatus();
+          const userDoc = await getDoc(doc(db, "Users", user.email!));
+          const isAdmin = userDoc.exists() && userDoc.data().role === "admin";
+
+          setUser({
+            uid: user.uid,
+            email: user.email,
+            isAdmin: isAdmin,
+            displayName: user.displayName,
+          });
+        } catch (error) {
+          console.error("Error fetching user role:", error);
+          setUser({...user, isAdmin: false}); // Fallback to basic user info if role fetch fails
+        }
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   return (

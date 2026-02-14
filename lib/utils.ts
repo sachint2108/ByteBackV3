@@ -1,31 +1,19 @@
 export const categoryMenuList = [
   {
     id: 1,
-    title: "Smart Phones",
+    title: "IPhones",
     src: "/smart phone icon.png",
     href: "/shop/smart-phones"
   },
   {
     id: 2,
-    title: "Tablets",
+    title: "Ipads",
     src: "/tablet icon.png",
     href: "/shop/tablets"
   },
   {
-    id: 3,
-    title: "Mouses",
-    src: "/mouse icon.png",
-    href: "/shop/mouses"
-  },
-  {
-    id: 4,
-    title: "Cameras",
-    src: "/camera icon.png",
-    href: "/shop/cameras"
-  },
-  {
     id: 5,
-    title: "Smart Watches",
+    title: "Apple Watches",
     src: "/smart watch.png",
     href: "/shop/watches"
   },
@@ -34,30 +22,6 @@ export const categoryMenuList = [
     title: "Laptops",
     src: "/laptop icon.png",
     href: "/shop/laptops"
-  },
-  {
-    id: 7,
-    title: "PCs",
-    src: "/pc icon.png",
-    href: "/shop/computers"
-  },
-  {
-    id: 8,
-    title: "Printers",
-    src: "/printers icon.png",
-    href: "/shop/printers"
-  },
-  {
-    id: 9,
-    title: "Earbuds",
-    src: "/ear buds icon.png",
-    href: "/shop/earbuds"
-  },
-  {
-    id: 10,
-    title: "Head Phones",
-    src: "/headphone icon.png",
-    href: "/shop/headphones"
   },
 ];
 
@@ -113,8 +77,7 @@ export const isValidNameOrLastname = (input: string) => {
   return regex.test(input);
 };
 
-export const isValidEmailAddressFormat = (input: string) => {
-  // simple email address format check
+export const EmailAddressFormat = (input: string) => {
   const regex = /^\S+@\S+\.\S+$/;
   return regex.test(input);
 };
@@ -185,61 +148,12 @@ export const validateCreditCard = (input: string) => {
     };
   }
   
-  // Detect card type based on BIN (Bank Identification Number)
-  const cardType = detectCardType(cleanedInput);
-  
-  return {
-    isValid: true,
-    cardType,
-    error: null
-  };
+
 };
 
-/**
- * Detect credit card type based on BIN patterns
- * @param cardNumber - The credit card number as a string
- * @returns string - The detected card type
- */
-const detectCardType = (cardNumber: string): string => {
-  const firstDigit = cardNumber[0];
-  const firstTwoDigits = cardNumber.substring(0, 2);
-  const firstFourDigits = cardNumber.substring(0, 4);
-  const firstThreeDigits = cardNumber.substring(0, 3);
   
-  // Visa: starts with 4
-  if (firstDigit === '4') {
-    return 'visa';
-  }
   
-  // Mastercard: starts with 5 or 2
-  if (firstDigit === '5' || (firstTwoDigits >= '22' && firstTwoDigits <= '27')) {
-    return 'mastercard';
-  }
   
-  // American Express: starts with 34 or 37
-  if (firstTwoDigits === '34' || firstTwoDigits === '37') {
-    return 'amex';
-  }
-  
-  // Discover: starts with 6011, 65, or 644-649
-  if (firstFourDigits === '6011' || firstTwoDigits === '65' || 
-      (firstThreeDigits >= '644' && firstThreeDigits <= '649')) {
-    return 'discover';
-  }
-  
-  // Diners Club: starts with 300-305, 36, or 38
-  if ((firstThreeDigits >= '300' && firstThreeDigits <= '305') || 
-      firstTwoDigits === '36' || firstTwoDigits === '38') {
-    return 'diners';
-  }
-  
-  // JCB: starts with 35
-  if (firstTwoDigits === '35') {
-    return 'jcb';
-  }
-  
-  return 'unknown';
-};
 
 export const isValidCreditCardExpirationDate = (input: string) => {
   // simple expiration date format check

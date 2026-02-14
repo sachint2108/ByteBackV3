@@ -1,12 +1,20 @@
-import { requireAdmin } from "@/utils/adminAuth";
+"use client"; // This is required to use the AuthContext and Guard
+import AdminGuard from "@/components/adminGuard";
 
-export default async function Layout({
+export default function Layout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  // This function handles all authentication and authorization server-side
-  await requireAdmin();
-
-  return <>{children}</>;
+}) {
+  return (
+    <AdminGuard>
+      {/* Everything inside this Guard is protected. 
+          If you aren't an admin, you'll be redirected to /login 
+      */}
+      <div className="min-h-screen bg-gray-50">
+        {/* You can add your Admin Sidebar here later */}
+        <main>{children}</main>
+      </div>
+    </AdminGuard>
+  );
 }

@@ -14,7 +14,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="bg-white" aria-labelledby="footer-heading">
+    <footer className="bg-gradient-to-l from-white to-black-600" aria-labelledby="footer-heading">
       <div>
         <h2 id="footer-heading" className="sr-only">
           Footer
@@ -22,11 +22,11 @@ const Footer = () => {
         <div className="mx-auto max-w-screen-2xl px-6 lg:px-8 pt-24 pb-14">
           <div className="xl:grid xl:grid-cols-3 xl:gap-8">
             <Image
-              src="/logo v1.png"
-              alt="Singitronic logo"
-              width={250}
-              height={250}
-              className="h-auto w-auto"
+              src="/bytebacklogo.png"
+              alt="ByteBack Logo"
+              width={180}
+              height={60}
+              className="h-auto w-auto rounded-full object-contain bg-gray-50 border border-gray-100 p-2"
             />
             <div className="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
               <div className="md:grid md:grid-cols-2 md:gap-8">
