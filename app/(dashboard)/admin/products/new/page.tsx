@@ -1,320 +1,207 @@
 "use client";
 import { DashboardSidebar } from "@/components";
-import apiClient from "@/lib/api";
 import { convertCategoryNameToURLFriendly as convertSlugToURLFriendly } from "@/utils/categoryFormating";
-import { sanitizeFormData } from "@/lib/form-sanitize";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
+import { productService } from "@/services/productService";
+import { useRouter } from "next/navigation";
 
 const AddNewProduct = () => {
-  const [product, setProduct] = useState<{
-    merchantId?: string;
-    title: string;
-    price: number;
-    manufacturer: string;
-    inStock: number;
-    mainImage: string;
-    description: string;
-    slug: string;
-    categoryId: string;
-  }>({
-    merchantId: "",
-    title: "",
-    price: 0,
-    manufacturer: "",
-    inStock: 1,
-    mainImage: "",
+  const router = useRouter();
+  
+//Fields from Firbase Database
+  const [product, setProduct] = useState({
+    id: "",           
+    name: "",          
+    price: "" as string | number,
+    category: "Tablet", 
+    condition: "Grade A", 
+    isSold: false,     
+    imageUrl: "",      
     description: "",
-    slug: "",
-    categoryId: "",
   });
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [merchants, setMerchants] = useState<Merchant[]>([]);
+
   const addProduct = async () => {
-    if (
-      !product.merchantId ||
-      product.title === "" ||
-      product.manufacturer === "" ||
-      product.description == "" ||
-      product.slug === ""
-    ) {
-      toast.error("Please enter values in input fields");
+    if (!product.name || !product.id || product.description === "" || !product.imageUrl || product.price === "") {
+      toast.error("Please fill out all required fields.");
       return;
     }
 
     try {
-      // Sanitize form data before sending to API
-      const sanitizedProduct = sanitizeFormData(product);
+      const toastId = toast.loading("Saving product to ByteBack database...");
+      
+      const productPayload = {
+        id: product.id,
+        name: product.name,
+        price: Number(product.price), 
+        category: product.category,
+        condition: product.condition,
+        isSold: product.isSold,
+        imageUrl: product.imageUrl,
+        description: product.description
+      };
 
-      console.log("Sending product data:", sanitizedProduct);
+      await productService.createProduct(productPayload);
 
-      // Correct usage of apiClient.post
-      const response = await apiClient.post(`/api/products`, sanitizedProduct);
-
-      if (response.status === 201) {
-        const data = await response.json();
-        console.log("Product created successfully:", data);
-        toast.success("Product added successfully");
-        setProduct({
-          merchantId: "",
-          title: "",
-          price: 0,
-          manufacturer: "",
-          inStock: 1,
-          mainImage: "",
-          description: "",
-          slug: "",
-          categoryId: categories[0]?.id || "",
-        });
-      } else {
-        const errorData = await response.json();
-        console.error("Failed to create product:", errorData);
-        toast.error(`"Error:" ${errorData.message || "Failed to add product"}`);
-      }
-    } catch (error) {
+      toast.success("Product added successfully!", { id: toastId });
+      router.push("/admin/products");
+    } catch (error: any) {
       console.error("Error adding product:", error);
-      toast.error("Network error. Please try again.");
+      toast.error(error.message || "Failed to add product. Please try again.");
     }
   };
-
-  const fetchMerchants = async () => {
-    try {
-      const res = await apiClient.get("/api/merchants");
-      const data: Merchant[] = await res.json();
-      setMerchants(data || []);
-      setProduct((prev) => ({
-      ...prev,
-        merchantId: prev.merchantId || data?.[0]?.id || "",
-      }));
-    } catch (e) {
-      toast.error("Failed to load merchants");
-    }
-  };
-
-  const uploadFile = async (file: any) => {
-    const formData = new FormData();
-    formData.append("uploadedFile", file);
-
-    try {
-      const response = await apiClient.post("/api/main-image", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-      } else {
-        console.error("File upload unsuccessfull");
-      }
-    } catch (error) {
-      console.error("Error happend while sending request:", error);
-    }
-  };
-
-  const fetchCategories = async () => {
-    apiClient
-      .get(`/api/categories`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setCategories(data);
-        setProduct({
-          merchantId: product.merchantId || "",
-          title: "",
-          price: 0,
-          manufacturer: "",
-          inStock: 1,
-          mainImage: "",
-          description: "",
-          slug: "",
-          categoryId: data[0]?.id,
-        });
-      });
-  };
-
-  useEffect(() => {
-    fetchCategories();
-    fetchMerchants();
-  }, []);
 
   return (
-    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
+    <div className="bg-gray-50 flex justify-start min-h-screen text-black font-sans">
       <DashboardSidebar />
-      <div className="flex flex-col gap-y-7 xl:ml-5 max-xl:px-5 w-full">
-        <h1 className="text-3xl font-semibold">Add new product</h1>
-        <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Merchant Info:</span>
-            </div>
-            <select
-              className="select select-bordered"
-              value={product?.merchantId}
-              onChange={(e) =>
-                setProduct({ ...product, merchantId: e.target.value })
-              }
-            >
-              {merchants.map((merchant) => (
-                <option key={merchant.id} value={merchant.id}>
-                  {merchant.name}
-                </option>
-              ))}
-            </select>
-            {merchants.length === 0 && (
-              <span className="text-xs text-red-500 mt-1">
-                Please create a merchant first.
-              </span>
+      <div className="flex flex-col gap-y-7 p-10 w-full max-w-4xl mx-auto">
+        <h1 className="text-3xl font-extrabold tracking-tight">Add New Apple Product</h1>
+        
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 flex flex-col gap-6">
+          
+          {/* Product Name & Custom ID */}
+          <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+            <label className="form-control w-full">
+              <div className="label"><span className="label-text font-semibold">Product Name:</span></div>
+              <input
+                type="text"
+                placeholder="e.g. iPad Air 5 (Wi-Fi)"
+                className="input input-bordered w-full"
+                value={product.name}
+                onChange={(e) => {
+                  setProduct({ 
+                    ...product, 
+                    name: e.target.value,
+                    // Auto-generates the custom ID as you type the name
+                    id: convertSlugToURLFriendly(e.target.value) 
+                  });
+                }}
+              />
+            </label>
+
+            <label className="form-control w-full">
+              <div className="label"><span className="label-text font-semibold">Custom ID (SKU):</span></div>
+              <input
+                type="text"
+                className="input input-bordered w-full bg-gray-50 text-gray-500"
+                value={product.id}
+                onChange={(e) => setProduct({ ...product, id: e.target.value })}
+              />
+            </label>
+          </div>
+
+          {/* Price & Category */}
+          <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+            <label className="form-control w-full">
+              <div className="label"><span className="label-text font-semibold">Price (ZAR):</span></div>
+              <input
+                type="number"
+                placeholder="e.g. 9500"
+                min="0"
+                step="any"
+                className="input input-bordered w-full"
+                value={product.price === 0 ? "" : product.price}
+                onChange={(e) => {
+                  const cleanNumber = e.target.value.replace(/^0+(?=\d)/, ''); 
+                  setProduct({ ...product, price: cleanNumber }); 
+              }}
+              />
+            </label>
+            
+            <label className="form-control w-full">
+              <div className="label"><span className="label-text font-semibold">Category:</span></div>
+              <select
+                className="select select-bordered w-full"
+                value={product.category}
+                onChange={(e) => setProduct({ ...product, category: e.target.value })}
+              >
+                <option value="Phone">Phone</option>
+                <option value="Laptop">Laptop</option>
+                <option value="Tablet">iPad</option>
+                <option value="Watch">Watch</option>
+              </select>
+            </label>
+          </div>
+
+          {/* Condition & Status */}
+          <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+            <label className="form-control w-full">
+              <div className="label"><span className="label-text font-semibold">Condition:</span></div>
+              <select
+                className="select select-bordered w-full"
+                value={product.condition}
+                onChange={(e) => setProduct({ ...product, condition: e.target.value })}
+              >
+                <option value="Grade A">Grade A (Like New)</option>
+                <option value="Grade B">Grade B (Good)</option>
+                <option value="Grade C">Grade C (Fair)</option>
+              </select>
+            </label>
+
+            <label className="form-control w-full">
+              <div className="label"><span className="label-text font-semibold">Availability Status:</span></div>
+              <select
+                className="select select-bordered w-full"
+                value={product.isSold ? "sold" : "available"}
+                onChange={(e) => setProduct({ ...product, isSold: e.target.value === "sold" })}
+              >
+                <option value="available">Available (In Stock)</option>
+                <option value="sold">Sold Out</option>
+              </select>
+            </label>
+          </div>
+
+          {/* Image Url */}
+          <div>
+            <label className="form-control w-full">
+              <div className="label"><span className="label-text font-semibold">Product Image URL:</span></div>
+              <input
+                type="url"
+                placeholder="https://example.com/image.png"
+                className="input input-bordered w-full"
+                value={product.imageUrl}
+                onChange={(e) => setProduct({ ...product, imageUrl: e.target.value })}
+              />
+            </label>
+            
+            {product.imageUrl && (
+              <div className="mt-4 border p-4 rounded-xl inline-block bg-gray-50">
+                <img
+                  src={product.imageUrl}
+                  alt="Product Preview"
+                  className="w-32 h-32 object-contain rounded-md"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "/product_placeholder.jpg";
+                  }}
+                />
+              </div>
             )}
-          </label>
-        </div>
+          </div>
 
-        <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Product name:</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs"
-              value={product?.title}
-              onChange={(e) =>
-                setProduct({ ...product, title: e.target.value })
-              }
-            />
-          </label>
-        </div>
+          {/* Description */}
+          <div>
+            <label className="form-control w-full">
+              <div className="label"><span className="label-text font-semibold">Description:</span></div>
+              <textarea
+                className="textarea textarea-bordered h-32 w-full"
+                placeholder="Blue finish. M1 chip. Like new condition..."
+                value={product.description}
+                onChange={(e) => setProduct({ ...product, description: e.target.value })}
+              ></textarea>
+            </label>
+          </div>
 
-        <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Product slug:</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs"
-              value={convertSlugToURLFriendly(product?.slug)}
-              onChange={(e) =>
-                setProduct({
-                  ...product,
-                  slug: convertSlugToURLFriendly(e.target.value),
-                })
-              }
-            />
-          </label>
-        </div>
-
-        <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Category:</span>
-            </div>
-            <select
-              className="select select-bordered"
-              value={product?.categoryId}
-              onChange={(e) =>
-                setProduct({ ...product, categoryId: e.target.value })
-              }
+          {/* Submit Button */}
+          <div className="mt-6">
+            <button
+              onClick={addProduct}
+              type="button"
+              className="btn bg-blue-600 hover:bg-blue-700 text-white w-full text-lg h-14 border-none shadow-sm"
             >
-              {categories &&
-                categories.map((category: any) => (
-                  <option key={category?.id} value={category?.id}>
-                    {category?.name}
-                  </option>
-                ))}
-            </select>
-          </label>
-        </div>
+              Save Product to ByteBack
+            </button>
+          </div>
 
-        <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Product price:</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs"
-              value={product?.price}
-              onChange={(e) =>
-                setProduct({ ...product, price: Number(e.target.value) })
-              }
-            />
-          </label>
-        </div>
-        <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Manufacturer:</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs"
-              value={product?.manufacturer}
-              onChange={(e) =>
-                setProduct({ ...product, manufacturer: e.target.value })
-              }
-            />
-          </label>
-        </div>
-        <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Is product in stock?</span>
-            </div>
-            <select
-              className="select select-bordered"
-              value={product?.inStock}
-              onChange={(e) =>
-                setProduct({ ...product, inStock: Number(e.target.value) })
-              }
-            >
-              <option value={1}>Yes</option>
-              <option value={0}>No</option>
-            </select>
-          </label>
-        </div>
-        <div>
-          <input
-            type="file"
-            className="file-input file-input-bordered file-input-lg w-full max-w-sm"
-            onChange={(e: any) => {
-              uploadFile(e.target.files[0]);
-              setProduct({ ...product, mainImage: e.target.files[0].name });
-            }}
-          />
-          {product?.mainImage && (
-            <Image
-              src={`/` + product?.mainImage}
-              alt={product?.title}
-              className="w-auto h-auto"
-              width={100}
-              height={100}
-            />
-          )}
-        </div>
-        <div>
-          <label className="form-control">
-            <div className="label">
-              <span className="label-text">Product description:</span>
-            </div>
-            <textarea
-              className="textarea textarea-bordered h-24"
-              value={product?.description}
-              onChange={(e) =>
-                setProduct({ ...product, description: e.target.value })
-              }
-            ></textarea>
-          </label>
-        </div>
-        <div className="flex gap-x-2">
-          <button
-            onClick={addProduct}
-            type="button"
-            className="uppercase bg-blue-500 px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2"
-          >
-            Add product
-          </button>
         </div>
       </div>
     </div>

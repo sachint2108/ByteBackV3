@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowFrontend", policy => {
         policy.WithOrigins("http://localhost:3000", "https://your-frontend-name.onrender.com") //replace later with front end url
@@ -53,7 +55,54 @@ app.MapGet("/api/products", async (FirestoreDb db) => {
     }
 });
 
+    
+
+    app.MapPost("/api/products", async (ProductDto nProduct, FirestoreDb db) => {
+    try 
+    {
+        var collection = db.Collection("Products");
+        
+        var productData = new Dictionary<string, object>
+        {
+            { "id", nProduct.id },
+            { "name", nProduct.name },
+            { "price", nProduct.price },
+            { "category", nProduct.category },
+            { "condition", nProduct.condition },
+            { "isSold", nProduct.isSold },
+            { "imageUrl", nProduct.imageUrl },
+            { "description", nProduct.description }
+        };
+
+        var docRef = await collection.AddAsync(productData);
+        return Results.Created($"/api/products/{docRef.Id}", productData);
+    }
+    catch (Exception ex) 
+    {
+        return Results.Problem($"Firestore Error: {ex.Message}");
+    }
+
+
+
+
+    
+});
+
 app.Run();
+
+
+
+public class ProductDto 
+    {
+    public string id { get; set; } = "";        
+    public string name { get; set; } = "";
+    public double price { get; set; }
+    public string category { get; set; } = "";
+    public string condition { get; set; } = "";  
+    public bool isSold { get; set; }
+    public string imageUrl { get; set; } = "";
+    public string description { get; set; } = "";
+    }
 
 //Cors Policy to allow requests from the React frontend, both locally and on Render. 
 //Adjust the URLs as needed for your deployment.

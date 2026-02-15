@@ -16,20 +16,20 @@ const Hero = () => {
             earum obcaecati. Optio, nam!
           </p>
           <div className="flex gap-x-1 max-lg:flex-col max-lg:gap-y-1">
-            <button className="bg-white text-blue-600 font-bold px-12 py-3 max-lg:text-xl max-sm:text-lg hover:bg-gray-100">
+            <button className="bg-white text-black font-bold px-12 py-3 max-lg:text-xl max-sm:text-lg hover:bg-gray-100">
               BUY NOW
             </button>
-            <button className="bg-white text-blue-600 font-bold px-12 py-3 max-lg:text-xl max-sm:text-lg hover:bg-gray-100">
+            <button className="bg-white text-black font-bold px-12 py-3 max-lg:text-xl max-sm:text-lg hover:bg-gray-100">
               LEARN MORE
             </button>
           </div>
         </div>
         <Image
-          src="/watch for banner.png"
+          src="/iPhone-17-Pro-Max-Artwork-PNG.png"
           width={400}
           height={400}
-          alt="smart watch"
-          className="max-md:w-[300px] max-md:h-[300px] max-sm:h-[250px] max-sm:w-[250px] w-auto h-auto"
+          alt="Apple iPhone 17 Pro Max PNG"
+          className="w-[250px] h-auto max-md:w-[200px] max-sm:w-[180px]"
         />
       </div>
     </div>

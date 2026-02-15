@@ -7,7 +7,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import HeaderTop from "@/components/HeaderTop";
 
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { useWishlistStore } from "@/app/_zustand/wishlistStore";
 
 import CartElement from "./CartElement";

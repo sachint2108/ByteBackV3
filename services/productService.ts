@@ -1,3 +1,5 @@
+import { get } from "http";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5021/api";
 
 export const productService = {
@@ -5,7 +7,9 @@ export const productService = {
     try {
     
         console.log("Current API URL:", API_BASE_URL);
-      const response = await fetch(`${API_BASE_URL}/products`);
+      const response = await fetch(`${API_BASE_URL}/products`, {
+        cache: "no-store"
+      });
       if (!response.ok) throw new Error("Backend connection failed");
       return await response.json();
     } catch (error) {
@@ -22,8 +26,65 @@ export const productService = {
     } catch (error) {
       return null;
     }
+  },
+
+  getProductsByCategory: async (category: string) => {
+    try {
+      const allproducts = await productService.getAllProducts();
+      return allproducts.filter((product: any) => product.category === category.toLowerCase());
+    } catch (error) {
+      console.error("Error fetching products by category:", error);
+      return [];
+    }
+  },
+
+  createProduct: async (productData: any) => {
+    try {
+      // 1. Log exactly what we are handing to C#
+      console.log("📦 PAYLOAD LEAVING FRONTEND:", JSON.stringify(productData));
+
+      const response = await fetch(`${API_BASE_URL}/products`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(productData),
+      });
+      
+      const textResponse = await response.text();
+      
+      if (!response.ok) {
+        // 2. Log the exact rejection reason from C#
+        console.error(`🚨 C# SERVER REJECTED REQUEST (Status ${response.status}):`, textResponse);
+        
+        let errorMessage = `Server Error ${response.status}`;
+        
+        if (textResponse) {
+          try {
+            const parsed = JSON.parse(textResponse);
+            // ASP.NET Core validation errors usually live inside an "errors" object
+            if (parsed.errors) {
+              errorMessage = "Validation Error: " + JSON.stringify(parsed.errors);
+            } else {
+              errorMessage = parsed.message || parsed.title || textResponse;
+            }
+          } catch (e) {
+            errorMessage = textResponse;
+          }
+        }
+        throw new Error(errorMessage);
+      }
+      
+      return textResponse ? JSON.parse(textResponse) : {};
+      
+    } catch (error) {
+      console.error("Error creating product:", error);
+      throw error;
+    }
   }
 };
+
+
 
 
 //Note: This service is responsible for handling all interactions with the product-related API endpoints. 
