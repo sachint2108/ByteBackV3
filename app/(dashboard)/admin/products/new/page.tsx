@@ -1,6 +1,6 @@
 "use client";
 import { DashboardSidebar } from "@/components";
-import { convertCategoryNameToURLFriendly as convertSlugToURLFriendly } from "@/utils/categoryFormating";
+import { convertProductNameToURL as convertSlugToURLFriendly } from "@/utils/categoryFormating";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { productService } from "@/services/productService";
@@ -23,7 +23,7 @@ const AddNewProduct = () => {
 
   const addProduct = async () => {
     if (!product.name || !product.id || product.description === "" || !product.imageUrl || product.price === "") {
-      toast.error("Please fill out all required fields.");
+      toast.error("Please fill out all required fields to be able to add a product.");
       return;
     }
 
@@ -72,7 +72,6 @@ const AddNewProduct = () => {
                   setProduct({ 
                     ...product, 
                     name: e.target.value,
-                    // Auto-generates the custom ID as you type the name
                     id: convertSlugToURLFriendly(e.target.value) 
                   });
                 }}
@@ -117,7 +116,7 @@ const AddNewProduct = () => {
               >
                 <option value="Phone">Phone</option>
                 <option value="Laptop">Laptop</option>
-                <option value="Tablet">iPad</option>
+                <option value="Tablet">Tablet</option>
                 <option value="Watch">Watch</option>
               </select>
             </label>

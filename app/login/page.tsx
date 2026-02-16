@@ -40,7 +40,7 @@ const LoginPage = () => {
     }
 
     try {
-      const toastId = toast.loading("Verifying your ByteBack credentials...please wait");
+      const toastId = toast.loading("Verifying your ByteBack credentials...Please wait");
       const uCredential = await signInWithEmailAndPassword(auth, email, password);
       const userDoc = await getDoc(doc(db, "Users", email));
       const isAdmin = userDoc.exists() && userDoc.data().role === "admin";

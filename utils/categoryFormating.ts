@@ -5,11 +5,9 @@ const formatCategoryName = (categoryName: string) => {
   return categoryNameArray.join(" ");
 };
 
-// helper function for converting category name to URL category name
-// For example "smart watches" after this function will be "smart-watches"
-const convertCategoryNameToURLFriendly = (categoryName: string) => {
+const convertProductNameToURL = (categoryName: string) => {
   const categoryNameArray = categoryName.split(" ");
   return categoryNameArray.join("-");
 };
 
-export { formatCategoryName, convertCategoryNameToURLFriendly };
+export { formatCategoryName, convertProductNameToURL };

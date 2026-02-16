@@ -28,6 +28,20 @@ export const productService = {
     }
   },
 
+  updateProduct: async (id: string, updatedData: any) => {
+      const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"},
+        body: JSON.stringify(updatedData),
+      });
+
+      const textResponse = await response.text();
+      if (!response.ok) {
+        throw new Error(textResponse || `Failed to update product in database (Status: ${response.status})`);
+      }
+  },
+
   getProductsByCategory: async (category: string) => {
     try {
       const allproducts = await productService.getAllProducts();
@@ -40,9 +54,6 @@ export const productService = {
 
   createProduct: async (productData: any) => {
     try {
-      // 1. Log exactly what we are handing to C#
-      console.log("📦 PAYLOAD LEAVING FRONTEND:", JSON.stringify(productData));
-
       const response = await fetch(`${API_BASE_URL}/products`, {
         method: "POST",
         headers: {
@@ -54,33 +65,13 @@ export const productService = {
       const textResponse = await response.text();
       
       if (!response.ok) {
-        // 2. Log the exact rejection reason from C#
-        console.error(`🚨 C# SERVER REJECTED REQUEST (Status ${response.status}):`, textResponse);
-        
-        let errorMessage = `Server Error ${response.status}`;
-        
-        if (textResponse) {
-          try {
-            const parsed = JSON.parse(textResponse);
-            // ASP.NET Core validation errors usually live inside an "errors" object
-            if (parsed.errors) {
-              errorMessage = "Validation Error: " + JSON.stringify(parsed.errors);
-            } else {
-              errorMessage = parsed.message || parsed.title || textResponse;
-            }
-          } catch (e) {
-            errorMessage = textResponse;
-          }
-        }
-        throw new Error(errorMessage);
+       throw new Error(textResponse || `Failed to save product in database (Status: ${response.status})`);
       }
-      
       return textResponse ? JSON.parse(textResponse) : {};
-      
     } catch (error) {
       console.error("Error creating product:", error);
       throw error;
-    }
+    }     
   }
 };
 
