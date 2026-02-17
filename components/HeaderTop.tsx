@@ -48,9 +48,9 @@ const HeaderTop = () => {
                 </Link>
               </li>
               <li className="flex items-center">
-                <Link href="/register" className="flex items-center gap-x-2 font-semibold">
+                <Link href="/signup" className="flex items-center gap-x-2 font-semibold">
                   <FaRegUser className="text-white" />
-                  <span>Register</span>
+                  <span>Sign Up</span>
                 </Link>
               </li>
             </>
