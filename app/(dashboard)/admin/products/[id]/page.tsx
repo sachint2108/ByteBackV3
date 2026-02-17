@@ -50,12 +50,16 @@ const EditProductPage = () => {
     }
   };
 
+  const { id } = useParams();
+
   const handleDelete = async () => {
     const deleteConfirm = window.confirm(`Are you sure you want to delete ${product.name}?`);
 
     if (deleteConfirm){
+      const toastId = toast.loading("Deleting Product...");
       try{
-        const toastId = toast.loading("Deleting Product...");
+        await productService.deleteProduct(id as string);
+        toast.success("Product deleted", { id: toastId });
         router.push("/admin/products");
       }
       catch (error:any){
