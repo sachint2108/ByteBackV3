@@ -50,7 +50,6 @@ const EditProductPage = () => {
     }
   };
 
-  const { id } = useParams();
 
   const handleDelete = async () => {
     const deleteConfirm = window.confirm(`Are you sure you want to delete ${product.name}?`);
