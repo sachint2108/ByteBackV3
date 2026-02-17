@@ -136,6 +136,26 @@ app.MapPut("/api/products/{id}", async (string id, ProductDto updatedProduct, Fi
     
 });
 
+app.MapDelete("/api/products/{id}", async (string id, FirestoreDb db) =>{
+try {
+    var refDoc = db.Collection("Products").Document(id);
+    var snapshot = await refDoc.GetSnapshotAsync();
+
+    if(!snapshot.Exists) return Results.NotFound(new{message = "Product not found"});
+
+    await refDoc.DeleteAsync();
+    return Results.Ok(new { message = "Product deleted" });
+}
+catch (Exception err)
+    {
+        return Results.Problem($"Error with Firestore: {err.Message}");
+    }
+    
+
+
+
+});
+
 app.Run();
 
 

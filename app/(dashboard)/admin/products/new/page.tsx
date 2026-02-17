@@ -43,7 +43,7 @@ const AddNewProduct = () => {
 
       await productService.createProduct(productPayload);
 
-      toast.success("Product added successfully!", { id: toastId });
+      toast.success("Product Added to Website!", { id: toastId });
       router.push("/admin/products");
     } catch (error: any) {
       console.error("Error adding product:", error);
@@ -59,7 +59,7 @@ const AddNewProduct = () => {
         
         <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 flex flex-col gap-6">
           
-          {/* Product Name & Custom ID */}
+          {/* Product Name*/}
           <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
             <label className="form-control w-full">
               <div className="label"><span className="label-text font-semibold">Product Name:</span></div>
@@ -78,6 +78,10 @@ const AddNewProduct = () => {
               />
             </label>
 
+
+
+
+                {/* Custom ID (SKU) */}
             <label className="form-control w-full">
               <div className="label"><span className="label-text font-semibold">Custom ID (SKU):</span></div>
               <input
@@ -89,7 +93,11 @@ const AddNewProduct = () => {
             </label>
           </div>
 
-          {/* Price & Category */}
+          
+          
+          
+          
+          {/* Price*/}
           <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
             <label className="form-control w-full">
               <div className="label"><span className="label-text font-semibold">Price (ZAR):</span></div>
@@ -106,7 +114,12 @@ const AddNewProduct = () => {
               }}
               />
             </label>
+
             
+            
+            
+            
+            {/* Category */}
             <label className="form-control w-full">
               <div className="label"><span className="label-text font-semibold">Category:</span></div>
               <select
@@ -122,7 +135,10 @@ const AddNewProduct = () => {
             </label>
           </div>
 
-          {/* Condition & Status */}
+          
+          
+          
+          {/* Condition*/}
           <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
             <label className="form-control w-full">
               <div className="label"><span className="label-text font-semibold">Condition:</span></div>
@@ -137,6 +153,11 @@ const AddNewProduct = () => {
               </select>
             </label>
 
+
+            
+            
+            
+            {/* Availability Status */}
             <label className="form-control w-full">
               <div className="label"><span className="label-text font-semibold">Availability Status:</span></div>
               <select
@@ -150,6 +171,10 @@ const AddNewProduct = () => {
             </label>
           </div>
 
+          
+          
+          
+          
           {/* Image Url */}
           <div>
             <label className="form-control w-full">
@@ -177,6 +202,11 @@ const AddNewProduct = () => {
             )}
           </div>
 
+          
+          
+          
+          
+          
           {/* Description */}
           <div>
             <label className="form-control w-full">
@@ -190,7 +220,11 @@ const AddNewProduct = () => {
             </label>
           </div>
 
-          {/* Submit Button */}
+
+
+
+
+            {/* Save Button */}
           <div className="mt-6">
             <button
               onClick={addProduct}

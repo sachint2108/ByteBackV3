@@ -64,7 +64,7 @@ const AdminAllProductsList = () => {
                         href={`/admin/products/${product.id}`} 
                         className="text-blue-600 hover:underline font-semibold"
                       >
-                        Edit Details
+                        Edit or Delete
                       </Link>
                     </td>
                   </tr>

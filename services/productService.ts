@@ -72,7 +72,20 @@ export const productService = {
       console.error("Error creating product:", error);
       throw error;
     }     
-  }
+  },
+
+  deleteProduct: async (id: string) =>{
+    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+      method: "DELETE",
+    });
+
+    const txtResponse = await response.text();
+    if (!response.ok) throw new Error (txtResponse);
+
+    return txtResponse ? JSON.parse(txtResponse): {};
+
+  },
+
 };
 
 
