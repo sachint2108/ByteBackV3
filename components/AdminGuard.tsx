@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export function AdminGuard({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -10,7 +11,8 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!loading && (!user || !user.isAdmin)) {
-      router.push("/login");
+      router.push("/");
+      toast.error("Access Denied");
     }
   }, [user, loading, router]);
 

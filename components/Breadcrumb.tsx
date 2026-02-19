@@ -1,10 +1,9 @@
-// *********************
-// Role of the component: Component that displays current page location in the application 
-// Name of the component: Breadcrumb.tsx
-
 import Link from "next/link";
 import React from "react";
 import { FaHouse } from "react-icons/fa6";
+
+
+//note: Trail on a page indicates the page's position in the site hierarchy
 
 const Breadcrumb = () => {
   return (

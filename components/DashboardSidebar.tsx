@@ -2,11 +2,9 @@ import React from "react";
 import { MdDashboard } from "react-icons/md";
 import { FaTable } from "react-icons/fa6";
 import { FaRegUser } from "react-icons/fa6";
-import { FaGear } from "react-icons/fa6";
 import { FaBagShopping } from "react-icons/fa6";
 import { FaStore } from "react-icons/fa6";
 import { MdCategory } from "react-icons/md";
-import { FaFileUpload } from "react-icons/fa";
 
 import Link from "next/link";
 
@@ -16,7 +14,7 @@ const DashboardSidebar = () => {
       <Link href="/admin">
         <div className="flex gap-x-2 w-full hover:bg-black cursor-pointer items-center py-6 pl-5 text-xl text-white">
           <MdDashboard className="text-2xl" />{" "}
-          <span className="font-normal">Dashboard</span>
+          <span className="font-normal">Reports</span>
         </div>
       </Link>
       <Link href="/admin/orders">

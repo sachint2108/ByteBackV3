@@ -6,7 +6,6 @@ import {
   SortBy,
 } from "@/components";
 import React from "react";
-import { sanitize } from "@/lib/sanitize";
 export const dynamic = "force-dynamic";
 
 const improveCategoryText = (text: string): string => {
@@ -37,7 +36,7 @@ const ShopPage = async ({
             <div className="flex justify-between items-center max-lg:flex-col max-lg:gap-y-5">
               <h2 className="text-2xl font-bold max-sm:text-xl max-[400px]:text-lg uppercase">
                 {awaitedParams?.slug && awaitedParams?.slug[0]?.length > 0
-                  ? sanitize(improveCategoryText(awaitedParams?.slug[0]))
+                  ?(improveCategoryText(awaitedParams?.slug[0]))
                   : "All products"}
               </h2>
 

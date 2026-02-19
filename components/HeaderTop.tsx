@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { FaHeadphones, FaRegEnvelope, FaRegUser } from "react-icons/fa6";
+import { FaHeadphones, FaRegEnvelope, FaRegUser, FaGear } from "react-icons/fa6";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
 
@@ -56,6 +56,19 @@ const HeaderTop = () => {
             </>
           ) : (
             <>
+            {user?.isAdmin && (
+                <li className="flex items-center border-r border-gray-300 pr-5">
+                  <Link href="/admin" className="flex items-center gap-x-2 font-bold text-black hover:text-gray-600 transition-colors">
+                    <FaGear className="text-black" />
+                    <span>Dashboard</span>
+                  </Link>
+                </li>
+              )}
+
+
+
+
+              
               <span className="ml-10 text-base">{user?.email}</span>
               <li className="flex items-center">
                 <button onClick={handleLogout} className="flex items-center gap-x-2 font-semibold">

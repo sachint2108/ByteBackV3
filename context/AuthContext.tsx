@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "@/firebase/config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
+import { useTimeout } from "@/hooks/timeout";
 
 interface AuthContextType {
   user: any; 
@@ -70,6 +71,9 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
 
     return () => unsubscribe();
   }, []);
+
+
+  useTimeout(user);
 
   return (
     <AuthContext.Provider value={{ user, loading, logout }}>

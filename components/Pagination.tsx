@@ -18,16 +18,16 @@ const Pagination = () => {
   return (
     <div className="join flex justify-center py-16">
       <button
-        className="join-item btn btn-lg bg-blue-500 text-white hover:bg-white hover:text-blue-500"
+        className="join-item btn btn-lg bg-black text-white hover:bg-white hover:text-black"
         onClick={() => decrementPage()}
       >
         «
       </button>
-      <button className="join-item btn btn-lg bg-blue-500 text-white hover:bg-white hover:text-blue-500">
+      <button className="join-item btn btn-lg bg-black text-white hover:bg-white hover:text-black">
         Page {page}
       </button>
       <button
-        className="join-item btn btn-lg bg-blue-500 text-white hover:bg-white hover:text-blue-500"
+        className="join-item btn btn-lg bg-black text-white hover:bg-white hover:text-black"
         onClick={() => incrementPage()}
       >
         »

@@ -1,5 +1,5 @@
 using Google.Cloud.Firestore;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http; // this is included already behind the scences
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -174,3 +174,7 @@ public class ProductDto
 
 //Cors Policy to allow requests from the React frontend, both locally and on Render. 
 //Adjust the URLs as needed for your deployment.
+// Not using controllers, rather usig something that catches web request and talks to firebase direclty
+// I did this so that I don't have to have soo many folders and things stay in one place
+// It speeds up the becuase it used less memory
+// I preffred to use the built map methods from microsoft so I can route web traffic with needing controller classes

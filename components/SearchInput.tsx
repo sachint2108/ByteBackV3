@@ -4,7 +4,6 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { sanitize } from "@/lib/sanitize";
 
 const SearchInput = () => {
   const [searchInput, setSearchInput] = useState<string>("");
@@ -13,7 +12,7 @@ const SearchInput = () => {
   const searchProducts = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const sanitizedSearch = sanitize(searchInput);
+    const sanitizedSearch = (searchInput);
     router.push(`/search?search=${encodeURIComponent(sanitizedSearch)}`);
     setSearchInput("");
   };
