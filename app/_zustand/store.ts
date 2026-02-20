@@ -1,17 +1,21 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
+//note: This file contains logic on the quantity up and down and does that product total calculation
+
 export type ProductInCart = {
   id: string;
-  title: string;
+  name: string;
   price: number;
   image: string;
-  amount: number;
+  totalQuantity: number;
 };
 
 export type State = {
   products: ProductInCart[];
   allQuantity: number;
+  subtotal: number;
+  vat: number;
   total: number;
 };
 
@@ -28,7 +32,13 @@ export const useProductStore = create<State & Actions>()(
     (set) => ({
       products: [],
       allQuantity: 0,
+      subtotal: 0,
+      vat: 0,
       total: 0,
+      
+      
+      
+      
       addToCart: (newProduct) => {
         set((state) => {
           const cartItem = state.products.find(
@@ -39,23 +49,33 @@ export const useProductStore = create<State & Actions>()(
           } else {
             state.products.map((product) => {
               if (product.id === cartItem.id) {
-                product.amount += newProduct.amount;
+                product.totalQuantity += newProduct.totalQuantity;
               }
             });
           }
           return { products: [...state.products] };
         });
       },
+      
+      
+      
       clearCart: () => {
         set((state: any) => {
           
           return {
             products: [],
             allQuantity: 0,
+            subtotal: 0,
+            vat: 0,
             total: 0,
+
           };
         });
       },
+
+
+
+
       removeFromCart: (id) => {
         set((state) => {
           state.products = state.products.filter(
@@ -66,21 +86,34 @@ export const useProductStore = create<State & Actions>()(
       },
 
       calculateTotals: () => {
-        set((state) => {
-          let amount = 0;
-          let total = 0;
-          state.products.forEach((item) => {
-            amount += item.amount;
-            total += item.amount * item.price;
+        set((cState) =>{
+          let cQuantity = 0;
+          let cSubtotal = 0;
+
+          cState.products.forEach((product) =>{
+            cQuantity += product.totalQuantity;
+            cSubtotal += product.totalQuantity * product.price;
           });
 
-          return {
-            products: state.products,
-            allQuantity: amount,
-            total: total,
+          let cVat = cSubtotal * 0.15;
+          let cShipping = cSubtotal > 0 ? 200 : 0;
+          let fTotal = cSubtotal + cVat + cShipping
+
+          return{
+            products: cState.products,
+            allQuantity: cQuantity,
+            subtotal: cSubtotal,
+            vat: cVat,
+            total: Math.round(fTotal),
           };
         });
       },
+      
+      
+      
+      
+      
+      
       updateCartAmount: (id, amount) => {
         set((state) => {
           const cartItem = state.products.find((item) => item.id === id);
@@ -90,7 +123,7 @@ export const useProductStore = create<State & Actions>()(
           } else {
             state.products.map((product) => {
               if (product.id === cartItem.id) {
-                product.amount = amount;
+                product.totalQuantity = amount;
               }
             });
           }
@@ -101,7 +134,7 @@ export const useProductStore = create<State & Actions>()(
     }),
     {
       name: "products-storage", // name of the item in the storage (must be unique)
-      storage: createJSONStorage(() => sessionStorage), // (optional) by default, 'localStorage' is used
+      storage: createJSONStorage(() => sessionStorage), // This is so that when I refresh I don't lose the cart
     }
   )
 );

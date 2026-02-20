@@ -1,24 +1,24 @@
-
-import {
-  SectionTitle
-} from "@/components";
 import { Loader } from "@/components/Loader";
 import { CartModule } from "@/components/modules/cart";
 import { Suspense } from "react";
 
 const CartPage = () => {
   return (
-    <div className="bg-white">
-      <SectionTitle title="Cart Page" path="Home | Cart" />
-      <div className="bg-white">
-        <div className="mx-auto max-w-2xl px-4 pb-24 pt-16 sm:px-6 lg:max-w-7xl lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Shopping Cart
+    <div className="bg-white min-h-screen font-sans">
+
+      <div className="mx-auto max-w-screen-2xl px-5 pb-24 pt-12 sm:px-6 lg:px-12">
+        
+
+        <div className="border-b border-gray-100 pb-8 mb-8">
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900 mb-3">
+            ByteBack Shopping Cart
           </h1>
-          <Suspense fallback={<Loader />}>
-            <CartModule />
-          </Suspense>
         </div>
+
+        <Suspense fallback={<Loader />}>
+          <CartModule />
+        </Suspense>
+        
       </div>
     </div>
   );

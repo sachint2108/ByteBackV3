@@ -1,7 +1,5 @@
 import {
   StockAvailabillity,
-  UrgencyText,
-
   ProductTabs,
   SingleProductDynamicFields,
   
@@ -10,6 +8,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import React from "react";
 import { productService } from "@/services/productService";
+import Link from "next/link";
 
 
 interface SingleProductPageProps {
@@ -94,21 +93,19 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
                 <div className="w-full">
                   <SingleProductDynamicFields product={prod} />
                 </div>
+                <div className="w-full mt-2">
+                  <Link
+                    href="/cart"
+                    className="w-full flex items-center justify-center gap-x-3 bg-white text-black border-2 border-black text-lg font-semibold py-4 rounded-2xl hover:bg-gray-50 transition-all active:scale-[0.98] shadow-sm"
+                  >
+                    Go to Cart
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </Link>
+                </div>
               </div>
-
-              {/* Action Area: Add to Cart */}
-              <div className="mt-8 pt-8 border-t border-gray-100">
-                <button 
-                  className="w-full flex items-center justify-center gap-x-3 bg-black text-white text-lg font-semibold py-4 rounded-2xl hover:bg-gray-800 transition-all active:scale-[0.98] shadow-md hover:shadow-lg"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                  </svg>
-                  Add to Cart
-                </button>
               </div>
-              
-            </div>
           </div>
 
           {/* Product Tabs */}

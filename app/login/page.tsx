@@ -29,6 +29,8 @@ const LoginPage = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
 
+    const callbackUrl = searchParams.get("callbackUrl") || "/";
+
     if (!EmailAddressFormat(email)) {
       setError("Email is invalid");
       return;

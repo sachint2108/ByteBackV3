@@ -1,21 +1,11 @@
-// *********************
-// Role of the component: Quantity input for incrementing and decrementing product quantity on the cart page
-// Name of the component: QuantityInputCart.tsx
-// Developer: Aleksandar Kuzmanovic
-// Version: 1.0
-// Component call: <QuantityInputCart product={product} />
-// Input parameters: { product: ProductInCart }
-// Output: one number input and two buttons
-// *********************
-
 "use client";
 import { ProductInCart, useProductStore } from "@/app/_zustand/store";
 import React, { useState } from "react";
-import { FaPlus } from "react-icons/fa6";
-import { FaMinus } from "react-icons/fa6";
+import { FaPlus, FaMinus } from "react-icons/fa6";
+
 
 const QuantityInputCart = ({ product } : { product: ProductInCart }) => {
-  const [quantityCount, setQuantityCount] = useState<number>(product.amount);
+  const [quantityCount, setQuantityCount] = useState<number>(product.totalQuantity);
   const { updateCartAmount, calculateTotals } = useProductStore();
 
   const handleQuantityChange = (actionName: string): void => {
@@ -42,10 +32,10 @@ const QuantityInputCart = ({ product } : { product: ProductInCart }) => {
       <div className="flex items-center justify-center rounded border border-gray-200 w-32">
         <button
           type="button"
-          className="size-10 leading-10 text-gray-600 transition hover:opacity-75 flex items-center justify-center"
+          className="w-10 h-10 flex justify-center items-center text-gray-600 hover:bg-white hover:text-black hover:shadow-sm rounded-lg transition-all"
           onClick={() => handleQuantityChange("minus")}
         >
-          <FaMinus />
+          <FaMinus className="text-sm" />
         </button>
 
         <input
@@ -53,15 +43,15 @@ const QuantityInputCart = ({ product } : { product: ProductInCart }) => {
           id="Quantity"
           disabled={true}
           value={quantityCount}
-          className="h-10 w-16 border-transparent text-center [-moz-appearance:_textfield] sm:text-sm [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
+          className="h-10 w-12 bg-transparent text-center text-lg font-semibold text-gray-900 border-none focus:ring-0 [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none"
         />
 
         <button
           type="button"
-          className="size-10 leading-10 text-gray-600 transition hover:opacity-75 flex items-center justify-center"
+          className="w-10 h-10 flex justify-center items-center text-gray-600 hover:bg-white hover:text-black hover:shadow-sm rounded-lg transition-all"
           onClick={() => handleQuantityChange("plus")}
         >
-          <FaPlus />
+          <FaPlus className="text-sm" />
         </button>
       </div>
     </div>

@@ -8,7 +8,6 @@ import toast from "react-hot-toast";
 import HeaderTop from "@/components/HeaderTop";
 
 import { useAuth } from "@/context/AuthContext";
-import { useWishlistStore } from "@/app/_zustand/wishlistStore";
 
 import CartElement from "./CartElement";
 import NotificationBell from "./NotificationBell";
@@ -18,7 +17,6 @@ const Header = () => {
   const { user, loading, logout } = useAuth(); 
   const pathname = usePathname();
   const router = useRouter();
-  const { wishQuantity } = useWishlistStore();
 
   const handleLogout = async () => {
     try {
