@@ -45,7 +45,7 @@ export const useCheckout = () => {
     }
 
     if (user && products.length === 0) {
-      route.push("/cart");
+        route.push("/cart");
     }
 
 
@@ -122,22 +122,23 @@ export const useCheckout = () => {
                     shipping: 200,
                     total,
                 },
-                status: "Pending",
+                status: "Awaiting Payment",
+                paymentStatus: "Unpaid",
                 createdAt: serverTimestamp(),
                 userEmail: user.email,
                 userId: user.uid
 
             };
 
-            await addDoc(collection(db, "Orders"), orderPayload);
+            const docRef = await addDoc(collection(db, "Orders"), orderPayload);
             
-
-
-            toast.success("Please proceed to the payment section. Your order has been reserved")
             clearCart();
 
+            toast.success("Please proceed to the payment section")
+       
+
             setTimeout(() => {
-                route.push("/")
+                route.push(`/payment/${docRef.id}`);
             }, 2000);
         }catch{
            toast.error("Something went wrong. Please try again."); 

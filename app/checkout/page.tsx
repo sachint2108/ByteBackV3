@@ -1,5 +1,4 @@
 "use client";
-import { SectionTitle } from "@/components";
 import Image from "next/image";
 import { useCheckout } from "@/hooks/useCheckout"; 
 import { Loader } from "@/components/Loader";
@@ -172,7 +171,7 @@ const checkoutpage = () =>{
               disabled={isSubmitting}
               className="w-full flex items-center justify-center gap-x-3 bg-black text-white text-lg font-semibold py-4 rounded-2xl hover:bg-gray-800 transition-all active:scale-[0.98] shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? "Finalizing Order..." : "Confirm & Place Order"}
+              {isSubmitting ? "Finalizing Order..." : "Pay Now"}
             </button>
           </div>
         </section>
