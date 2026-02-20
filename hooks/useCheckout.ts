@@ -25,11 +25,8 @@ export const useCheckout = () => {
         lastname: "",
         phone: "",
         email: "",
-        company: "",
         address: "",
-        hOraNumber: "",
         city: "",
-        country: "",
         postalCode: "",
         orderNotice: "",
     });
@@ -101,13 +98,10 @@ export const useCheckout = () => {
                     lastName: checkoutform.lastname,
                     email: checkoutform.email,
                     phone: checkoutform.phone,
-                    company: checkoutform.company,
                 },
                 shippingInformation : {
                     address: checkoutform.address,
-                    houseOrapartmentNumber: checkoutform.hOraNumber,
                     city: checkoutform.city,
-                    country: checkoutform.country,
                     postalCode: checkoutform.postalCode,
                 },
                 goods: products.map((p) => ({

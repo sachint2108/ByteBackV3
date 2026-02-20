@@ -5,10 +5,22 @@ import { db } from "@/firebase/config";
 import { collection, doc, getDocs } from "firebase/firestore";
 
 interface Orders{
-  id: string;
-  customerEmail: string;
-  orderStatus: string;
-  totalAmount: number;
+ id: string;
+  userEmail: string;
+  customerInformation: {
+    firstName: string;
+    lastName: string;
+    phone: string;
+  };
+  paymentStatus: string;
+  status: string;
+  moneyInformation: {
+    total: number;
+  };
+  shippingInformation: {
+    address: string;
+    city: string;
+  };
   createdAt: Date;
 }
 
@@ -25,18 +37,19 @@ useEffect(() =>{
       setLoad(true);
       const querySnapshot = await getDocs(collection(db, "Orders")); //Fetching it from the Orders Collection
       
-      const listOrder : Orders[] = querySnapshot.docs.map(doc =>{
+      const listOrder: Orders[] = querySnapshot.docs.map(doc => {
         const data = doc.data();
-          return{
-            id: doc.id,
-            customerEmail: data.customerEmail,
-            orderStatus: data.orderStatus,
-            totalAmount: data.totalAmount,
-            createdAt: data.createdAt ? data.createdAt.toDate() : new Date(),
-
-          };
+        return {
+          id: doc.id,
+          userEmail: data.userEmail || "",
+          customerInformation: data.customerInformation || {},
+          paymentStatus: data.paymentStatus || "Unpaid",
+          status: data.status || "Pending",
+          moneyInformation: data.moneyInformation || { total: 0 },
+          shippingInformation: data.shippingInformation || {},
+          createdAt: data.createdAt ? data.createdAt.toDate() : new Date(),
+        };
       });
-
 
       listOrder.sort((aa, bb) => bb.createdAt.getTime() - aa.createdAt.getTime());
 
@@ -93,72 +106,42 @@ return (
                 
                 {/* Table Body */}
                 <tbody className="divide-y divide-gray-100 bg-white">
-                  {orders.length > 0 ? (
-                    orders.map((order, index) => (
-                      <tr key={`${order.id}-${index}`} className="hover:bg-gray-50/50 transition-colors">
-                        
-                        {/* Order ID */}
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500">
-                          #{order.id.substring(0, 8)}
-                        </td>
+                  {orders.map((order) => (
+                    <tr key={order.id} className="hover:bg-gray-50/50 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500">
+                        #{order.id.substring(0, 8)}
+                      </td>
 
-                        {/* Customer Email */}
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div>
-                              <div className="font-semibold text-gray-900 text-sm">{order.customerEmail}</div>
-                            </div>
-                          </div>
-                        </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="font-semibold text-gray-900 text-sm">
+                          {order.customerInformation?.firstName} {order.customerInformation?.lastName}
+                        </div>
+                        <div className="text-xs text-gray-500">{order.userEmail}</div>
+                      </td>
 
-                        {/* Date and Time*/}
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">
-                            {order.createdAt.toLocaleDateString("en-ZA", {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            })}
-                          </div>
-                          <div className="text-xs text-gray-500 mt-0.5">
-                            {order.createdAt.toLocaleTimeString("en-ZA", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </div>
-                        </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {order.createdAt.toLocaleDateString("en-ZA")}
+                      </td>
 
-                        {/* Status Badge */}
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="inline-flex items-center rounded-md bg-gray-50 px-2.5 py-1 text-xs font-medium uppercase tracking-wide text-gray-700 ring-1 ring-inset ring-gray-500/20">
-                            {order.orderStatus}
-                          </span>
-                        </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wide ${
+                          order.paymentStatus === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                        }`}>
+                          {order.paymentStatus}
+                        </span>
+                      </td>
 
-                        {/* Total Price */}
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                          R {order.totalAmount.toLocaleString()}
-                        </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
+                        R {order.moneyInformation?.total?.toLocaleString() ?? "0"}
+                      </td>
 
-                        {/* Actions */}
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <Link 
-                            href={`/admin/orders/${order.id}`} 
-                            className="text-white hover:text-black transition-colors bg-black border border-black hover:bg-white px-4 py-2 rounded-lg shadow-sm"
-                          >
-                            View Details
-                          </Link>
-                        </td>
-
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={6} className="px-6 py-12 text-center text-gray-500 text-sm">
-                        No orders found in the database.
+                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                        <Link href={`/admin/orders/${order.id}`} className="...">
+                          View Details
+                        </Link>
                       </td>
                     </tr>
-                  )}
+                  ))}
                 </tbody>
               </table>
             </div>
