@@ -10,7 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 
 export const useCheckout = () => {
     
-    const {user} = useAuth();
+    const {user, loading} = useAuth();
 
     const route = useRouter();
 
@@ -33,12 +33,18 @@ export const useCheckout = () => {
 
     // Won't let the user checkout unless they sign in
     useEffect(() => {
-    const toastid = "auth-check";
+    
+        if (loading) return;
+    
+        const toastid = "auth-check";
+
+   
     
     
     if (user === null) {
-      toast.error("Please sign in to complete your purchase", {id :toastid});
+      toast.error("Please Register or Sign In to Complete Your Purchase", {id :toastid});
       route.push("/login?callbackUrl=/checkout"); 
+      return;
     }
 
     if (user && products.length === 0) {
@@ -46,7 +52,7 @@ export const useCheckout = () => {
     }
 
 
-    }, [user, products.length, route]);
+    }, [user, products.length, route, loading]);
 
     const fieldValidation = () =>{
         if (!isValidNameOrLastname(checkoutform.name)) {

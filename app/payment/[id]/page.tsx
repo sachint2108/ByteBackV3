@@ -25,7 +25,7 @@ const PaymentPage = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen flex items-center justify-center px-6 font-sans">
+    <div className="bg-white min-h-screen flex items-center justify-center px-6 font-sans">
       <div className="max-w-md w-full">
         
         <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 text-center">

@@ -8,6 +8,7 @@ import { auth, db } from "@/firebase/config";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
+import Link from "next/link";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -52,7 +53,7 @@ const LoginPage = () => {
         router.push("/admin");
       } else {
         toast.success("Welcome back to ByteBack", { id: toastId });
-        router.push("/");
+        router.push(callbackUrl);
       }
 
     } catch (err: any) {
@@ -62,53 +63,107 @@ const LoginPage = () => {
     }
   };
 
+  const registerUrl = `/signup?callbackUrl=${encodeURIComponent(searchParams.get("callbackUrl") || "/")}`;
+
   return (
-    <div className="bg-black">
-      <div className="flex min-h-screen flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <h2 className="mt-6 text-center text-3xl font-bold leading-9 tracking-tight text-white">
+    <div className="bg-white font-sans">
+      <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8 bg-white">
+        
+        <div className="flex justify-center flex-col items-center">
+          <h2 className="mt-6 text-center text-3xl font-extrabold tracking-tight text-gray-900">
             Sign into ByteBack
           </h2>
         </div>
 
-        <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-[480px]">
-          <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
+        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-[480px]">
+          <div className="bg-white px-6 py-12 shadow-sm border border-gray-200 sm:rounded-2xl sm:px-12">
             <form className="space-y-6" onSubmit={handleLogin}>
+              
+              {/* Email */}
               <div>
-                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                <label htmlFor="email" className="block text-sm font-semibold leading-6 text-gray-900">
                   Email address
                 </label>
                 <div className="mt-2">
-                  <input id="email" name="email" type="email" autoComplete="email" required className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                  <input 
+                    id="email" 
+                    name="email" 
+                    type="email" 
+                    autoComplete="email" 
+                    required 
+                    className="input input-bordered w-full" 
+                  />
                 </div>
               </div>
 
+              {/* Password */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                <label htmlFor="password" className="block text-sm font-semibold leading-6 text-gray-900">
                   Password
                 </label>
                 <div className="mt-2">
-                  <input id="password" name="password" type="password" autoComplete="current-password" required className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                  <input 
+                    id="password" 
+                    name="password" 
+                    type="password" 
+                    autoComplete="current-password" 
+                    required 
+                    className="input input-bordered w-full" 
+                  />
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              {/* Remember Me & Forgot Password */}
+              <div className="flex items-center justify-between pt-2">
                 <div className="flex items-center">
-                  <input id="remember-me" name="remember-me" type="checkbox" className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black" />
-                  <label htmlFor="remember-me" className="ml-3 block text-sm leading-6 text-gray-900">Remember me</label>
+                  <input 
+                    id="remember-me" 
+                    name="remember-me" 
+                    type="checkbox" 
+                    className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black" 
+                  />
+                  <label htmlFor="remember-me" className="ml-3 block text-sm leading-6 text-gray-700">
+                    Remember me
+                  </label>
                 </div>
                 <div className="text-sm leading-6">
-                  <a href="#" className="font-semibold text-black hover:text-black">Forgot password?</a>
+                  <a href="#" className="font-semibold text-black hover:underline underline-offset-4">
+                    Forgot password?
+                  </a>
                 </div>
               </div>
 
-              <div>
-                <CustomButton buttonType="submit" text="Sign in" paddingX={3} paddingY={1.5} customWidth="full" textSize="sm" />
+              {/* Submit Button */}
+              <div className="pt-4">
+                <button
+                  type="submit"
+                  className="btn bg-black hover:bg-gray-800 text-white w-full text-lg h-12 border-none rounded-lg"
+                >
+                  Sign in
+                </button>
               </div>
             </form>
-            <p className="text-red-600 text-center font-medium text-[14px] mt-6">
-              {error && error}
-            </p>
+
+            {/* Error Display */}
+            {error && (
+              <p className="text-red-600 text-center text-sm mt-6 font-medium">
+                {error}
+              </p>
+            )}
+            
+            {/* Redirect to Sign Up */}
+            <div className="mt-10 pt-8 border-t border-gray-100 text-center">
+              <p className="text-sm text-gray-600">
+                New to ByteBack?{" "}
+                <Link 
+                  href={registerUrl}
+                  className="font-bold text-black hover:underline underline-offset-4"
+                >
+                  Create an account
+                </Link>
+              </p>
+            </div>
+            
           </div>
         </div>
       </div>

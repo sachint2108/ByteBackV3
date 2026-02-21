@@ -1,15 +1,17 @@
 "use client";
 import { CustomButton, SectionTitle } from "@/components";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "@/firebase/config"; 
+import { auth, db } from "@/firebase/config";
+import Link from "next/link";
 
 const SignUp = () => {
   const [error, createError] = useState("");
   const router = useRouter();
+  const sParams = useSearchParams();
 
   const isValidEmail = (email: string) => {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -54,8 +56,9 @@ const SignUp = () => {
       });
 
       toast.success("Registration successful! You can continue shopping", { id: toastId });
-      
-      router.push("/");
+
+      const callbackUrl = sParams.get("callbackUrl") || "/";
+      router.push(callbackUrl);
       
     } catch (err: any) {
       // Firebase returns specific error codes we can catch
@@ -68,6 +71,8 @@ const SignUp = () => {
       }
     }
   };
+
+  const loginUrl = `/login?callbackUrl=${encodeURIComponent(sParams.get("callbackUrl") || "/")}`;
 
   return (
     <div className="bg-white font-sans">
