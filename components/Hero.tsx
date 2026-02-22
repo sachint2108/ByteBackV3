@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import Link from "next/link";
 
 const Hero = () => {
   return (
@@ -15,9 +16,12 @@ const Hero = () => {
             Give your tech a second life and make your next upgrade seamless, sustainable, and smart.
           </p>
           <div className="flex gap-x-1 max-lg:flex-col max-lg:gap-y-1">
-            <button className="bg-white text-black font-bold px-12 py-3 max-lg:text-xl max-sm:text-lg hover:bg-gray-100">
-              TRADE IN NOW
-            </button>
+            <Link 
+                href="/trade-in"
+                className="bg-white text-black font-bold px-12 py-3 max-lg:text-xl max-sm:text-lg hover:bg-gray-100 inline-block text-center transition-colors"
+              >
+                TRADE IN NOW
+              </Link>
             <button className="bg-white text-black font-bold px-12 py-3 max-lg:text-xl max-sm:text-lg hover:bg-gray-100">
               LEARN MORE
             </button>
