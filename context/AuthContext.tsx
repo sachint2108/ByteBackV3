@@ -3,7 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "@/firebase/config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { useTimeout } from "@/hooks/timeout";
+import { useTimeout } from "@/hooks/useTimeout";
 
 interface AuthContextType {
   user: any; 

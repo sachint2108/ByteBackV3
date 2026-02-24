@@ -43,22 +43,22 @@ const LoginPage = () => {
     }
 
     try {
-      const toastId = toast.loading("Verifying your ByteBack credentials");
+      const toastId = toast.loading("Verifying your ByteBack Credentials");
       const uCredential = await signInWithEmailAndPassword(auth, email, password);
       const userDoc = await getDoc(doc(db, "Users", email));
       const isAdmin = userDoc.exists() && userDoc.data().role === "admin";
  
       if (isAdmin) {
-        toast.success("Welcome to your Admin Dashboard!", { id: toastId });
+        toast.success("Welcome to your Admin Dashboard", { id: toastId });
         router.push("/admin");
       } else {
-        toast.success("Welcome back to ByteBack", { id: toastId });
+        toast.success("Welcome Back to ByteBack", { id: toastId });
         router.push(callbackUrl);
       }
 
     } catch (err: any) {
-      console.error("Login process failed:", err);
-      setError(err.message || "Failed to verify credentials");
+      console.error("Login Process Failed:", err);
+      setError(err.message || "Failed to Verify Credentials");
       toast.dismiss();
     }
   };

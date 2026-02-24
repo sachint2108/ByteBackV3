@@ -5,6 +5,7 @@ import { FaRegUser } from "react-icons/fa6";
 import { FaBagShopping } from "react-icons/fa6";
 import { FaStore } from "react-icons/fa6";
 import { MdCategory } from "react-icons/md";
+import { MdRepeat } from "react-icons/md";
 
 import Link from "next/link";
 
@@ -39,6 +40,13 @@ const DashboardSidebar = () => {
         <div className="flex gap-x-2 w-full hover:bg-black cursor-pointer items-center py-6 pl-5 text-xl text-white">
           <FaRegUser className="text-2xl" />{" "}
           <span className="font-normal">Users</span>
+        </div>
+      </Link>
+
+      <Link href="/admin/tradeins">
+        <div className="flex gap-x-2 w-full hover:bg-black cursor-pointer items-center py-6 pl-5 text-xl text-white">
+          <MdRepeat className="text-2xl" /> 
+          <span className="font-normal">Trade-Ins</span>
         </div>
       </Link>
      

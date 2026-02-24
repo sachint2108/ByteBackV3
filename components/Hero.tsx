@@ -22,9 +22,11 @@ const Hero = () => {
               >
                 TRADE IN NOW
               </Link>
-            <button className="bg-white text-black font-bold px-12 py-3 max-lg:text-xl max-sm:text-lg hover:bg-gray-100">
-              LEARN MORE
+            <Link href="/checkdevice">
+            <button className="bg-white text-black font-bold px-12 py-3 max-lg:text-xl max-sm:text-lg hover:bg-gray-100 transition-colors">
+              CHECK YOUR DEVICE STATUS
             </button>
+          </Link>
           </div>
         </div>
         <Image

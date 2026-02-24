@@ -11,6 +11,8 @@ export const useTimeout = (user: any) => {
 
 
     useEffect (() => {
+
+        if (!user) return;
         let timeoutId: NodeJS.Timeout;
 
 

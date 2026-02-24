@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/firebase/config";
+import { evaluateTradeIn } from "@/services/tradeInServices";
 
 export const useTradeIn = () => {
   const { user } = useAuth();
@@ -12,7 +13,7 @@ export const useTradeIn = () => {
   const [estimate, setEstimate] = useState<number | null>(null);
 
     const [formData, setFormData] = useState({
-    typeDevice: "Iphone",
+    deviceType: "Iphone",
     model: "",
     storage: "128GB",
     condition: "Good",
@@ -34,35 +35,30 @@ export const useTradeIn = () => {
     }
 
     setIsSubmitting(true);
-    const loadingToast = toast.loading("Validating IMEI and calculating AI estimate...");
+    toast.loading("Validating IMEI and Calculating AI estimate", { id: "estimate-toast" });
 
     try{
-        const response = await fetch("/api/evaluate-trade-in", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+        const data = await evaluateTradeIn(formData);
+        
+        if (!data) {
+        throw new Error("Failed to get an Estimate from the Server.");
+        }
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error("Failed to validate device");
-      }
-
-      setEstimate(data.estimate);
-      toast.success("Device validated!");
-
-    } catch (err: any) {
-      toast.error(err.message);
-    } finally {
-      setIsSubmitting(false);
+        setEstimate(data.estimatedValue)
+        toast.success("Device Validated", { id: "estimate-toast" });
+    
+    }catch (err: any) {
+        toast.error (err.message, {id: "estimate-toast"});
+    }finally{
+        setIsSubmitting(false);
     }
-    };
+  };
+     
 
     const tradeInConfirm = async () =>{
         if (!user || !estimate) return;
         setIsSubmitting(true);
-        const saveToast = toast.loading("Submitting your trade-in request...");
+        const saveToast = toast.loading("Submitting your Trade-In Request");
 
         try {
             await addDoc(collection(db, "TradeIns"), {
@@ -74,7 +70,7 @@ export const useTradeIn = () => {
                 createdAt: serverTimestamp(),
             });
 
-            toast.success("Trade-in submitted! Waiting for admin approval.", { id: saveToast, duration: 5000 });
+            toast.success("Trade-in submitted! Waiting for Admin Approval.", { id: saveToast, duration: 5000 });
             route.push("/");
         }catch{
             toast.error("Failed to submit. Please try again.");

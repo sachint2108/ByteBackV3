@@ -28,8 +28,8 @@ const TradeInPage = () => {
                 <label className="block text-sm font-bold text-gray-900 mb-2">Device Type</label>
                 <select 
                   className="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl focus:ring-black focus:border-black"
-                  value={formData.typeDevice}
-                  onChange={(e) => setFormData({ ...formData, typeDevice: e.target.value })}
+                  value={formData.deviceType}
+                  onChange={(e) => setFormData({ ...formData, deviceType: e.target.value })}
                 >
                   <option value="iPhone">iPhone</option>
                   <option value="iPad">iPad</option>
