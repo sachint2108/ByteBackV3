@@ -65,6 +65,15 @@ const HeaderTop = () => {
                 </li>
               )}
 
+              {!user?.isAdmin && (
+                <li className="flex items-center border-r border-gray-300 pr-5">
+                  <Link href="/account" className="flex items-center gap-x-2 font-bold text-black hover:text-gray-600 transition-colors">
+                    <FaRegUser className="text-black" />
+                    <span>My Account</span>
+                  </Link>
+                </li>
+              )}
+
 
 
 

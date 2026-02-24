@@ -6,27 +6,46 @@ import ProductItem from "./ProductItem";
 import { productService } from "@/services/productService";
 
 const ProductsSection = async () => {
-  const products = await productService.getAllProducts();
+  const allproducts = await productService.getAllProducts();
+  const limitedproducts = allproducts.slice(0, 8);
 
   return (
-    <div className="bg-gradient-to-l from-white to-black-600 py-10">
-      <div className="max-w-screen-2xl mx-auto px-16 max-md:px-6">
-        <h2 className="text-4xl font-bold text-center mb-10 text-white">
-          New Arrivals
-        </h2>
+
+    <div className="bg-gradient-to-l from-white to-black-600 py-20">
+      <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">
         
-        <div className="grid grid-cols-4 gap-10 max-xl:grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1">
-          {products.length > 0 ? (
-            products.map((product: any) => (
-              <ProductItem 
+    
+        <div className="text-center mb-12">
+           <h2 className="text-4xl font-black text-white tracking-tight mb-3">
+            Trending Products
+          </h2>
+          <p className="text-white max-w-2xl mx-auto">
+            Our best Second-Hand Apple gear, Curated Just for You.
+          </p>
+        </div>
+        
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 xl:gap-8 items-stretch">
+          {limitedproducts.length > 0 ? (
+            limitedproducts.map((product: any) => (
+              
+             
+              <div 
                 key={product.id} 
-                product={product} 
-                color="black"
-              />
+                className="bg-white p-5 rounded-[1.5rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+              >
+                <ProductItem 
+                  product={product} 
+  
+                  color="black"
+                />
+              </div>
+      
+
             ))
           ) : (
-            <div className="text-xl text-gray-500 col-span-full text-center">
-              No products found.
+            <div className="text-xl text-gray-500 col-span-full text-center py-20">
+              No products Currently Available.
             </div>
           )}
         </div>
