@@ -1,127 +1,129 @@
 "use client";
 import { DashboardSidebar } from "@/components";
+import React, { use, useEffect } from "react";
+import { useSingleCategory } from "@/hooks/useSingleCatergory";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState, use } from "react";
-import toast from "react-hot-toast";
-import { formatCategoryName } from "../../../../../utils/categoryFormating";
-import { convertCategoryNameToURLFriendly } from "../../../../../utils/categoryFormating";
-import apiClient from "@/lib/api";
 
-interface DashboardSingleCategoryProps {
+interface AdminDashboardSingleCategoryProps {
   params: Promise<{ id: string }>;
 }
 
-const DashboardSingleCategory = ({ params }: DashboardSingleCategoryProps) => {
+const AdminDashboardSingleCategory = ({ params }: AdminDashboardSingleCategoryProps) => {
   const resolvedParams = use(params);
   const id = resolvedParams.id;
+  const route = useRouter();
 
-  const [categoryInput, setCategoryInput] = useState<{ name: string }>({
-    name: "",
-  });
-  const router = useRouter();
 
-  const deleteCategory = async () => {
-    const requestOptions = {
-      method: "DELETE",
-    };
-    // sending API request for deleting a category
-    apiClient
-      .delete(`/api/categories/${id}`, requestOptions)
-      .then((response) => {
-        if (response.status === 204) {
-          toast.success("Category deleted successfully");
-          router.push("/admin/categories");
-        } else {
-          throw Error("There was an error deleting a category");
-        }
-      })
-      .catch((error) => {
-        toast.error("There was an error deleting category");
-      });
-  };
+  const { name, setName, load, updateCategory, deleteCategory } = useSingleCategory(id);
 
-  const updateCategory = async () => {
-    if (categoryInput.name.length > 0) {
-      try {
-        const response = await apiClient.put(`/api/categories/${id}`, {
-          name: convertCategoryNameToURLFriendly(categoryInput.name),
-        });
 
-        if (response.status === 200) {
-          await response.json();
-          toast.success("Category successfully updated");
-        } else {
-          const errorData = await response.json();
-          toast.error(errorData.error || "Error updating a category");
-        }
-      } catch (error) {
-        console.error("Error updating category:", error);
-        toast.error("There was an error while updating a category");
-      }
-    } else {
-      toast.error("For updating a category you must enter all values");
-      return;
-    }
-  };
 
-  useEffect(() => {
-    // sending API request for getting single categroy
-    apiClient
-      .get(`/api/categories/${id}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setCategoryInput({
-          name: data?.name,
-        });
-      });
-  }, [id]);
+
+  if (load) {
+    return (
+      <div className="p-10 bg-gray-900 min-h-screen text-white flex items-center justify-center">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
-      <DashboardSidebar />
-      <div className="flex flex-col gap-y-7 xl:pl-5 max-xl:px-5 w-full">
-        <h1 className="text-3xl font-semibold">Category details</h1>
-        <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Category name:</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs"
-              value={formatCategoryName(categoryInput.name)}
-              onChange={(e) =>
-                setCategoryInput({ ...categoryInput, name: e.target.value })
-              }
-            />
-          </label>
+  <div className="flex justify-start min-h-screen bg-gray-50/30 font-sans w-full">
+    <DashboardSidebar />
+    
+    <div className="flex-1 pb-12 w-full">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+        
+        {/* Header Section */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Category Settings</h1>
+          <p className="mt-2 text-sm text-gray-500">
+            Edit the details for this collection or manage its availability.
+          </p>
         </div>
 
-        <div className="flex gap-x-2 max-sm:flex-col">
-          <button
-            type="button"
-            className="uppercase bg-blue-500 px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2"
-            onClick={updateCategory}
+        {/* Form Card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="p-8">
+            <div className="space-y-8">
+              
+              {/* Category Name Input */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                  Category Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. MacBook Pro"
+                  className="w-full h-12 px-4 rounded-xl border border-gray-200 bg-gray-50/50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+
+              {/* Danger Zone - Styled specifically for the light theme */}
+              <div className="bg-red-50/50 border border-red-100 rounded-2xl p-6">
+                <div className="flex items-center gap-2 text-red-600 mb-2">
+                  <span className="font-bold uppercase text-xs tracking-widest">Danger Zone</span>
+                </div>
+                <p className="text-sm text-red-500/80 leading-relaxed">
+                  Deleting this Category Will Permanently Remove all Associated Products from your Inventory. This Action Cannot be Undone.
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-6 border-t border-gray-100">
+                <div className="flex flex-col sm:flex-row gap-3 justify-end">
+                  
+                  {/* Delete Button - Outline Style */}
+                  <button
+                    type="button"
+                    className="px-8 h-11 rounded-lg border border-red-200 text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors"
+                    onClick={deleteCategory}
+                  >
+                    Delete Category
+                  </button>
+
+                  {/* Save Changes Button - Solid Style */}
+                  <button
+                    type="button"
+                    className="px-10 h-11 rounded-lg bg-black text-sm font-semibold text-white shadow-sm hover:bg-gray-800 transition-all active:scale-95"
+                    onClick={updateCategory}
+                  >
+                    Save Changes
+                  </button>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        {/* Back Link */}
+        <div className="mt-8 text-center">
+          <button 
+            onClick={() => route.push("/admin/categories")}
+            className="text-sm font-medium text-gray-400 hover:text-gray-600 transition-colors"
           >
-            Update category
-          </button>
-          <button
-            type="button"
-            className="uppercase bg-red-600 px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm hover:bg-red-700 hover:text-white focus:outline-none focus:ring-2"
-            onClick={deleteCategory}
-          >
-            Delete category
+            ← Back to All Categories
           </button>
         </div>
-        <p className="text-xl text-error max-sm:text-lg">
-          Note: if you delete this category, you will delete all products
-          associated with the category.
-        </p>
+
+
       </div>
     </div>
+  </div>
   );
+
+
+  
+
+
+
+
+
+
 };
 
-export default DashboardSingleCategory;
+export default AdminDashboardSingleCategory

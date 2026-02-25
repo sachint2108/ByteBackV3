@@ -45,20 +45,20 @@ const ProductTabs = ({ product}: ProductTabProps ) => {
         </button>
       </div>
 
-      {/* Tab Content */}
+
       <div className="pt-8 min-h-[200px]">
         
-        {/* Tab 0: Description */}
+
         {currentProductTab === 0 && (
           <div className="text-gray-700 text-base leading-relaxed max-w-3xl">
-            {/* React renders strings safely by default, no need for dangerouslySetInnerHTML */}
+
             <p className="whitespace-pre-wrap">
               {product?.description || "No description provided for this product."}
             </p>
           </div>
         )}
 
-        {/* Tab 1: Additional Info */}
+
         {currentProductTab === 1 && (
           <div className="overflow-x-auto max-w-2xl">
             <table className="table-auto w-full text-left text-base text-gray-700">

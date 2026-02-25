@@ -12,12 +12,6 @@ export const categoryMenuList = [
     href: "/shop/tablets"
   },
   {
-    id: 5,
-    title: "Apple Watches",
-    src: "/smart watch.png",
-    href: "/shop/watches"
-  },
-  {
     id: 6,
     title: "Laptops",
     src: "/laptop icon.png",

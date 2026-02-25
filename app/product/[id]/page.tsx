@@ -1,5 +1,5 @@
 import {
-  StockAvailabillity,
+
   ProductTabs,
   SingleProductDynamicFields,
   

@@ -130,7 +130,6 @@ const AddNewProduct = () => {
                 <option value="Phone">Phone</option>
                 <option value="Laptop">Laptop</option>
                 <option value="Tablet">Tablet</option>
-                <option value="Watch">Watch</option>
               </select>
             </label>
           </div>

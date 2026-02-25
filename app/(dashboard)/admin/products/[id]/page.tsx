@@ -28,7 +28,7 @@ const EditProductPage = () => {
         const data = await productService.getProductById(id as string);
         setProduct(data);
       } catch (error) {
-        toast.error("Could not load product details. Please try again.");
+        toast.error("Could not Load Product Details. Please Try Again.");
       } finally {
         setLoading(false);
       }
@@ -38,12 +38,12 @@ const EditProductPage = () => {
 
   const handleUpdate = async () => {
     try {
-      const toastId = toast.loading("Updating ByteBack inventory...Please Hold Tight!");
+      const toastId = toast.loading("Updating ByteBack Inventory");
       
       const payload = { ...product, price: Number(product.price) };
       await productService.updateProduct(id as string, payload);
       
-      toast.success("Product Updated Successfully!", { id: toastId });
+      toast.success("Product Updated Successfully", { id: toastId });
       router.push("/admin/products");
     } catch (error: any) {
       toast.error(error.message);
@@ -52,17 +52,17 @@ const EditProductPage = () => {
 
 
   const handleDelete = async () => {
-    const deleteConfirm = window.confirm(`Are you sure you want to delete ${product.name}?`);
+    const deleteConfirm = window.confirm(`Are you Sure you Want to Delete ${product.name}?`);
 
     if (deleteConfirm){
-      const toastId = toast.loading("Deleting Product...");
+      const toastId = toast.loading("Deleting Product");
       try{
         await productService.deleteProduct(id as string);
-        toast.success("Product deleted", { id: toastId });
+        toast.success("Product Deleted", { id: toastId });
         router.push("/admin/products");
       }
       catch (error:any){
-        toast.error(error.message || "Product failed to Delete");
+        toast.error(error.message || "Product Failed to Delete");
       }
     };
   }
@@ -71,10 +71,10 @@ const EditProductPage = () => {
   if (!product) return <div className="p-10">Product not found.</div>;
 
   return (
-    <div className="bg-gray-50 flex justify-start min-h-screen text-black font-sans">
+    <div className="bg-gray-50 flex justify-start min-h-screen text-white font-sans">
       <DashboardSidebar />
       <div className="flex flex-col gap-y-7 p-10 w-full max-w-4xl mx-auto">
-        <h1 className="text-3xl font-extrabold tracking-tight">Edit {product?.name}</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight text-black">Edit {product?.name}</h1>
         
         <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 flex flex-col gap-6">
           
@@ -86,6 +86,7 @@ const EditProductPage = () => {
                 type="text"
                 className="input input-bordered w-full"
                 value={product.name}
+        
                 onChange={(e) => setProduct({ ...product, name: e.target.value })}
               />
             </label>
@@ -227,23 +228,19 @@ const EditProductPage = () => {
 
 
           {/* Update Button */}
-          <div className="mt-8 flex gap-4">
+          <div className="mt-8 flex flex-col sm:flex-row gap-4">
             <button
               onClick={handleUpdate}
-              type="button"
-              className="btn bg-blue-600 hover:bg-blue-700 text-white flex-1 h-14 border-none shadow-sm text-lg"
+              className="flex-1 h-14 bg-black text-white text-lg font-black uppercase tracking-widest rounded-xl hover:bg-gray-800 transition-all shadow-xl active:scale-95"
             >
               Save Changes
             </button>
 
-
-            {/*Delete Btn */}
             <button
               onClick={handleDelete}
-              type="button"
-              className="btn bg-red-500 hover:bg-red-600 text-white px-10 h-14 border-none shadow-sm text-lg"
+              className="h-14 px-10 bg-white text-red-600 border-2 border-red-600 text-lg font-black uppercase tracking-widest rounded-xl hover:bg-red-50 transition-all active:scale-95"
             >
-              Delete Product
+              Delete
             </button>
           </div>
 
