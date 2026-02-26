@@ -6,6 +6,7 @@ import BuyNowSingleProductBtn from "./BuyNowSingleProductBtn";
 
 const SingleProductDynamicFields = ({ product }: { product: any }) => {
   const [quantityCount, setQuantityCount] = useState<number>(1);
+
   return (
     <div className="flex flex-col gap-y-8 mt-6 w-full">
       <QuantityInput

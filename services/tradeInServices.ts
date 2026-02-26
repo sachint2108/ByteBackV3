@@ -1,4 +1,4 @@
-"use server";
+"use server";// This ensure that it only runs on the secure backend server
 
 
 
