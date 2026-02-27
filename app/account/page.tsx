@@ -1,21 +1,19 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { FaHeart, FaBoxOpen, FaChevronDown, FaChevronUp, FaTrash } from "react-icons/fa6";
 import Link from "next/link";
 import { useUserAccountData } from "@/hooks/useUserAccountData";
 import { useSearchParams } from "next/navigation";
 import { useWishlist } from "@/context/WishListContext";
 
+const UserAccountContent = () => {
+  const { user, orders, loading: accountLoading } = useUserAccountData();
+  const { wishlist, toggleWishlist, loading: wishlistLoading } = useWishlist();
 
-const UserAccountPage = () => {
-    const { user, orders, loading: accountLoading } = useUserAccountData();
+  const loading = accountLoading || wishlistLoading;
 
-    const { wishlist, toggleWishlist, loading: wishlistLoading } = useWishlist();
-
-    const loading = accountLoading || wishlistLoading;// This ensures it will get removed while live
-
-    const searchParams = useSearchParams();
-    const tabFromUrl = searchParams.get("tab");
+  const searchParams = useSearchParams();
+  const tabFromUrl = searchParams.get("tab");
 
   const [activeTab, setActiveTab] = useState<"orders" | "wishlist">(
     tabFromUrl === "wishlist" ? "wishlist" : "orders"
@@ -29,23 +27,17 @@ const UserAccountPage = () => {
     }
   }, [tabFromUrl]);
 
-    const [orderExpand, setOrderExpand] = useState<string[]>([]);
+  const [orderExpand, setOrderExpand] = useState<string[]>([]);
 
-
-    const toggleOrder = (orderId: string) => {
+  const toggleOrder = (orderId: string) => {
     setOrderExpand((prev) => 
     prev.includes(orderId) ? prev.filter(id => id !== orderId) : [...prev, orderId]
     );
   };
 
+  if (!user) return null; // Prevents Flashing
 
-    
-    if (!user) return null; //Prevents Flashing
-
-
-
-
-    return (
+  return (
     <div className="bg-white min-w-screen py-12 font-sans">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -55,8 +47,6 @@ const UserAccountPage = () => {
           <p className="text-gray-500 mt-2">Welcome Back, {user.email}</p>
         </div>
 
-        
-        
         {/* Tab Navigation */}
         <div className="flex space-x-4 mb-8 border-b border-gray-200 pb-px">
           <button
@@ -83,9 +73,6 @@ const UserAccountPage = () => {
           </button>
         </div>
 
-        
-        
-        
         {/* Content Area */}
         {loading ? (
           <div className="flex justify-center items-center py-20 bg-white rounded-[2rem] shadow-sm border border-gray-200">
@@ -96,11 +83,6 @@ const UserAccountPage = () => {
           </div>
         ) : (
           <div className="bg-white rounded-[2rem] shadow-sm border border-gray-200 p-6 sm:p-10">
-            
-            
-            
-            
-            
             
             {/* ORDERS TAB */}
             {activeTab === "orders" && (
@@ -143,8 +125,6 @@ const UserAccountPage = () => {
                               </span>
                             </div>
                             
-                            
-                            
                             {/* The Dropdown Arrow */}
                             <div className="text-gray-400">
                               {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
@@ -152,8 +132,6 @@ const UserAccountPage = () => {
                           </div>
                         </div>
 
-                        
-                        
                         {/* The Expandable Details Section */}
                         {isExpanded && (
                           <div className="px-6 pb-6 pt-2 border-t border-gray-200/60 bg-white">
@@ -171,10 +149,6 @@ const UserAccountPage = () => {
                                 </div>
                               ))}
                             </div>
-                            
-                            
-                            
-                            
 
                             <div className="mt-4 pt-4 border-t border-dashed border-gray-200 text-xs text-gray-500 flex flex-col gap-1 items-end">
                               <p>Subtotal: R {order.moneyInformation?.subtotal?.toLocaleString()}</p>
@@ -205,7 +179,6 @@ const UserAccountPage = () => {
                   wishlist?.map((item) => (
                     <div key={item.id} className="relative border border-gray-100 rounded-2xl p-4 flex flex-col items-center text-center hover:shadow-md transition-shadow">
                       
-
                       <button 
                         onClick={() => toggleWishlist({ id: item.productId })}
                         className="absolute top-3 right-3 z-10 p-2 bg-gray-50 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-200"
@@ -220,7 +193,6 @@ const UserAccountPage = () => {
                       <h3 className="font-bold text-gray-900 text-sm mb-1 line-clamp-1">{item.name}</h3>
                       <p className="text-green-600 font-black mb-4">R {Number(item.price).toLocaleString()}</p>
                       
-
                       <Link 
                         href={`/product/${item.productId}`}
                         className="w-full flex justify-center items-center bg-black text-white py-2 rounded-xl text-xs font-bold hover:bg-gray-800 transition-colors"
@@ -238,6 +210,20 @@ const UserAccountPage = () => {
 
       </div>
     </div>
+  );
+};
+
+
+const UserAccountPage = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white font-sans">
+        <span className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin mb-4"></span>
+        <p className="text-sm font-bold tracking-widest uppercase text-gray-400">Loading...</p>
+      </div>
+    }>
+      <UserAccountContent />
+    </Suspense>
   );
 };
 
