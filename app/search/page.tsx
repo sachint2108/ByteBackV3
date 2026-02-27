@@ -38,7 +38,7 @@ const SearchPage = async ({ searchParams }: Props) => {
           </p>
           {searchQuery ? (
             <h1 className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tighter">
-              Matches For <span className="text-gray-400">"{searchQuery}"</span>
+              Matches For <span className="text-black">"{searchQuery}"</span>
             </h1>
           ) : (
             <h1 className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tighter">
