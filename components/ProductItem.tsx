@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { FaHeart, FaRegHeart } from "react-icons/fa6";
 import { useWishlist } from "@/context/WishListContext";
 
@@ -11,79 +12,68 @@ const ProductItem = ({
   product: any;
   color: string;
 }) => {
-
   const { wishlist, toggleWishlist } = useWishlist();
-
   const isWishlisted = wishlist?.some((item) => item.productId === product.id);
 
   return (
-    <div className="flex flex-col items-center gap-y-2 w-full relative">
+    <div className="group relative flex flex-col w-full">
+      
+      
 
-      <div className="relative w-full flex justify-center">
+      <div className="relative w-full aspect-square bg-white rounded-[2.5rem] overflow-hidden transition-all duration-700 ease-out group-hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] group-hover:scale-[1.02]">
         
 
         <button
           onClick={(e) => {
-            e.preventDefault(); // Prevents navigating to the product page when clicking the heart
+            e.preventDefault();
             toggleWishlist(product);
           }}
-          className="absolute top-2 right-2 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:scale-110 active:scale-95 transition-all"
+          className="absolute top-6 right-6 z-20 p-3 bg-white/40 backdrop-blur-md rounded-full shadow-sm opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 hover:bg-white active:scale-90"
         >
           {isWishlisted ? (
-            <FaHeart className="text-red-500 text-xl" />
+            <FaHeart className="text-red-500 text-lg" />
           ) : (
-            <FaRegHeart className="text-gray-400 text-xl hover:text-red-500 transition-colors" />
+            <FaRegHeart className="text-gray-900 text-lg" />
           )}
         </button>
 
+    
+        <Link href={`/product/${product.id}`} className="block w-full h-full p-8">
+          <img
+            src={product.imageUrl || "/product_placeholder.jpg"}
+            className="w-full h-full object-contain transition-transform duration-1000 ease-in-out group-hover:scale-110"
+            alt={product?.name || "Product image"}
+          />
+        </Link>
 
 
-
-
-
-
-
-
-
-
-
-      <Link href={`/product/${product.id}`}>
-        <img
-          src={product.imageUrl ? product.imageUrl : "/product_placeholder.jpg"}
-          className="w-auto h-[300px] object-contain"
-          alt={product?.name || "Product image"}
-          loading="lazy" 
-        />
-      </Link>
+        <Link
+          href={`/product/${product?.id}`}
+          className="absolute bottom-0 left-0 w-full py-6 bg-black text-white text-[10px] font-black uppercase tracking-[0.3em] text-center translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out z-10"
+        >
+          View
+        </Link>
       </div>
-      
-      <Link
-        href={`/product/${product.id}`}
-        className={
-          color === "black"
-            ? `text-xl text-black font-normal mt-2 uppercase text-center`
-            : `text-xl text-white font-normal mt-2 uppercase text-center`
-        }
-      >
-        {product.name}
-      </Link>
-      
-      <p
-        className={
-          color === "black"
-            ? "text-lg text-black font-semibold"
-            : "text-lg text-white font-semibold"
-        }
-      >
-        R{product.price}
-      </p>
 
-      <Link
-        href={`/product/${product?.id}`}
-        className="block flex justify-center items-center w-full uppercase bg-white px-0 py-2 text-base border border-gray-300 font-bold text-black-600 shadow-sm hover:bg-black hover:text-white focus:outline-none focus:ring-2"
-      >
-        <p>View product</p>
-      </Link>
+
+      <div className="mt-6 px-2 flex flex-col items-start gap-1">
+        <div className="flex justify-between items-start w-full">
+          <Link
+            href={`/product/${product.id}`}
+            className="text-sm font-black text-gray-900 tracking-tight leading-tight max-w-[70%] group-hover:text-gray-600 transition-colors"
+          >
+            {product.name}
+          </Link>
+          <p className="text-sm font-bold text-gray-900 tabular-nums">
+            R {product.price?.toLocaleString()}
+          </p>
+        </div>
+        
+
+        <span className="text-[10px] font-black uppercase tracking-widest text-gray-300">
+          {product.category || "Verified Tech"} • {product.condition || "Pristine"}
+        </span>
+      </div>
     </div>
   );
 };

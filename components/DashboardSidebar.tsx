@@ -15,7 +15,7 @@ const DashboardSidebar = () => {
       <Link href="/admin">
         <div className="flex gap-x-2 w-full hover:bg-black cursor-pointer items-center py-6 pl-5 text-xl text-white">
           <MdDashboard className="text-2xl" />{" "}
-          <span className="font-normal">Reports</span>
+          <span className="font-normal">Business Overview Reports</span>
         </div>
       </Link>
       <Link href="/admin/orders">

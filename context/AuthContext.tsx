@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "@/firebase/config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useTimeout } from "@/hooks/useTimeout";
 
 interface AuthContextType {
@@ -18,6 +18,27 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const useAuth = () => useContext(AuthContext);
+
+
+const trackUserActivity = async (userId: string) => {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const storageKey = `tracked_${userId}_${today}`;
+
+    if (localStorage.getItem(storageKey)) return;
+
+    const activityRef = collection(db, "user_activity");
+    await addDoc(activityRef, {
+      uid: userId,
+      timestamp: serverTimestamp(),
+      type: "session_start"
+    });
+
+    localStorage.setItem(storageKey, "true");
+  } catch (error) {
+    console.error("Error logging activity:", error);
+  }
+};
 
 export const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<any>(null);
@@ -37,7 +58,6 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setLoading(true);
-      console.log("Auth State Changed detected.");
 
       if (firebaseUser) {
         try {
@@ -45,8 +65,7 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
             console.log("Fetching user document for:", firebaseUser.email);
             const userDoc = await getDoc(doc(db, "Users", firebaseUser.email));
             const isAdmin = userDoc.exists() && userDoc.data().role === "admin";
-            
-            console.log("User document fetched. Is Admin?:", isAdmin);
+
 
             setUser({
               uid: firebaseUser.uid,
@@ -54,6 +73,11 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
               isAdmin: isAdmin,
               displayName: firebaseUser.displayName,
             });
+
+            await trackUserActivity(firebaseUser.uid);
+
+
+
           } else {
             setUser({ ...firebaseUser, isAdmin: false });
           }

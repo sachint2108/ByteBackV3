@@ -156,6 +156,34 @@ catch (Exception err)
 
 });
 
+
+app.MapGet("/api/reports/user-activity", async (FirestoreDb db) => {
+    try {
+        DateTime thirtyDaysAgo = DateTime.UtcNow.Date.AddDays(-30);
+        var collection = db.Collection("user_activity");
+        var query = collection.WhereGreaterThanOrEqualTo("timestamp", thirtyDaysAgo);
+        var snapshot = await query.GetSnapshotAsync();
+
+        var reportData = snapshot.Documents
+            .Select(doc => {
+                Timestamp ts = doc.GetValue<Timestamp>("timestamp");
+                return ts.ToDateTime().ToLocalTime().Date;
+            })
+            .GroupBy(date => date)
+            .Select(group => new {
+                date = group.Key.ToString("MMM dd"), 
+                count = group.Count()
+            })
+            .OrderBy(x => DateTime.ParseExact(x.date, "MMM dd", null))
+            .ToList();
+
+        return Results.Ok(reportData);
+    }
+    catch (Exception ex) {
+        return Results.Problem($"Report Error: {ex.Message}");
+    }
+});
+
 app.Run();
 
 

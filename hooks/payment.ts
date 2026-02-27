@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
@@ -10,66 +10,89 @@ export const usePayment = () => {
   const [order, setOrder] = useState<any>(null);
   const [load, setLoading] = useState(true);
 
-    useEffect(() => {
+  useEffect(() => {
     const readOrder = async () => {
       if (!id) return;
       try {
         const docRef = doc(db, "Orders", id as string);
         const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()){
-            setOrder(docSnap.data());
-        }else{
-            toast.error("Order not found")
+        if (docSnap.exists()) {
+          setOrder(docSnap.data());
+        } else {
+          toast.error("Order not found");
         }
-        
-        }catch{
-            toast.error("Could not load payment details");
+      } catch {
+        toast.error("Could not load payment details");
+      } finally {
+        setLoading(false);
+      }
+    };
+    readOrder();
+  }, [id]);
 
-        }finally{
-            setLoading(false);
-            }
+
+  const paystackConfig = useMemo(() => {
+    if (!order) return null;
+
+ 
+    const items = order.cartItems || order.items || [];
     
+    
+    const productSummary = items
+      ?.map((item: any) => item.product?.name || item.name)
+      .filter((name: string) => name && typeof name === "string")
+      .join(", ");
+
+    return {
+      reference: new Date().getTime().toString(),
+      email: order.customerInformation.email,
+      amount: order.moneyInformation.total * 100,
+      publicKey: process.env.NEXT_PUBLIC_PAYSTACK_TEST_KEY as string,
+      currency: "ZAR",
+      metadata: {
+       
+        ...(productSummary && { product_name: productSummary }),
+        order_id: id,
+        custom_fields: [
+          {
+            display_name: "Items Purchased",
+            variable_name: "items_purchased",
+            value: productSummary || "N/A",
+          },
+        ],
+      },
+    };
+  }, [order, id]);
+
+  const paymentSuccess = async (reference: any) => {
+    try {
+      const orderRef = doc(db, "Orders", id as string);
       
-    
-    
-        };
-        readOrder();
+  
+      await updateDoc(orderRef, {
+        status: "Processing",
+        paymentStatus: "Paid",
+        paymentReference: reference.reference,
+        paidAt: new Date().toISOString(),
+      });
 
-    }, [id]);
+      toast.success("Payment Received");
+      
+     
+      setTimeout(() => router.push("/"), 2000);
+    } catch {
+      toast.error("Payment successful but database update failed.");
+    }
+  };
 
-    const paymentSuccess = async (reference:any) =>{
-        try{
-            const orderRef = doc(db, "Orders", id as string);
-            await updateDoc(orderRef, {
-                status: "Processing",
-                paymentStatus: "Paid",
-                paymentReference: reference.reference,
-                paidAt: new Date().toISOString()
-            });
+  const handleClose = () => toast.error("Payment window closed.");
 
-            toast.success("Payment Recieved");
-            toast.success("More Information at Order History")
-
-            setTimeout(() => {
-            router.push("/");
-             },       2000);
-        }catch{
-            toast.error("Payment was Successful but we could not update the order");
-        }
-    };
-
-    const handleClose = () => {
-    toast.error("Payment window closed.");
-    };
-    
-    return{
-        order,
-        load,
-        id,
-        paymentSuccess,
-        handleClose
-    };
-
-
+  return {
+    order,
+    load,
+    id,
+    paystackConfig,
+    paymentSuccess,
+    handleClose,
+  };
 };
