@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowFrontend", policy => {
-        policy.WithOrigins("http://localhost:3000", "https://your-frontend-name.onrender.com") //replace later with front end url
+        policy.WithOrigins("http://localhost:3000", "https://bytebackv3.onrender.com") 
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
