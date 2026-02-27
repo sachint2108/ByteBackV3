@@ -61,26 +61,30 @@ export const useAdminStats = () => {
             });
             const amount = trx.amount / 100;
             
-           
+            
             dailyMap[date] = (dailyMap[date] || 0) + amount;
             grandTotal += amount;
 
-            
+           
             const name = trx.metadata?.product_name;
 
-            
-            const isProperProduct = name && !name.startsWith("#") && !name.startsWith("Order #");
+           
+            const isProperProduct = name && 
+                                    name !== "Misc / Unknown" && 
+                                    !name.startsWith("#") && 
+                                    !name.startsWith("Order #");
 
             if (isProperProduct) {
               productTally[name] = (productTally[name] || 0) + amount;
             }
           });
 
+          
           const formattedEarnings = Object.keys(dailyMap)
             .map((date) => ({ date, revenue: dailyMap[date] }))
             .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-       
+        
           const formattedProducts = Object.keys(productTally)
             .map((name) => ({ name, revenue: productTally[name] }))
             .sort((a, b) => b.revenue - a.revenue)

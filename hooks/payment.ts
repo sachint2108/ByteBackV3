@@ -30,16 +30,15 @@ export const usePayment = () => {
     readOrder();
   }, [id]);
 
-
   const paystackConfig = useMemo(() => {
     if (!order) return null;
 
- 
-    const items = order.cartItems || order.items || [];
+   
+    const items = order.goods || [];
     
     
     const productSummary = items
-      ?.map((item: any) => item.product?.name || item.name)
+      ?.map((item: any) => item.name) 
       .filter((name: string) => name && typeof name === "string")
       .join(", ");
 
@@ -50,7 +49,7 @@ export const usePayment = () => {
       publicKey: process.env.NEXT_PUBLIC_PAYSTACK_TEST_KEY as string,
       currency: "ZAR",
       metadata: {
-       
+        
         ...(productSummary && { product_name: productSummary }),
         order_id: id,
         custom_fields: [
@@ -68,7 +67,6 @@ export const usePayment = () => {
     try {
       const orderRef = doc(db, "Orders", id as string);
       
-  
       await updateDoc(orderRef, {
         status: "Processing",
         paymentStatus: "Paid",
@@ -77,8 +75,6 @@ export const usePayment = () => {
       });
 
       toast.success("Payment Received");
-      
-     
       setTimeout(() => router.push("/"), 2000);
     } catch {
       toast.error("Payment successful but database update failed.");
