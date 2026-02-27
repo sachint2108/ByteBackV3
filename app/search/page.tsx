@@ -38,7 +38,7 @@ const SearchPage = async ({ searchParams }: Props) => {
           </p>
           {searchQuery ? (
             <h1 className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tighter">
-              Matches For <span className="text-black">"{searchQuery}"</span>
+              Matches For <span className="text-black">&quot;{searchQuery}&quot;</span>
             </h1>
           ) : (
             <h1 className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tighter">
@@ -66,8 +66,8 @@ const SearchPage = async ({ searchParams }: Props) => {
                 No Exact Matches Found
               </h3>
               
-              <p className="text-gray-500 max-w-md mx-auto text-sm leading-relaxed mb-10">
-                We Couldn't Find any Devices Matching <span className="font-semibold text-gray-900">"{searchQuery}"</span>. Try adjusting your AI prompt or browsing our main categories.
+             <p className="text-gray-500 max-w-md mx-auto text-sm leading-relaxed mb-10">
+                We Couldn&apos;t Find any Devices Matching <span className="font-semibold text-gray-900">&quot;{searchQuery}&quot;</span>. Try adjusting your AI prompt or browsing our main categories.
               </p>
               
               <a 

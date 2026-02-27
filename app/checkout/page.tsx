@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useCheckout } from "@/hooks/useCheckout"; 
 import { Loader } from "@/components/Loader";
 
-const checkoutpage = () =>{
+const Checkoutpage = () =>{
   const { 
     checkoutform, 
     setCheckoutform, 
@@ -181,4 +181,4 @@ const checkoutpage = () =>{
 
 
 };
-export default checkoutpage;
+export default Checkoutpage;
