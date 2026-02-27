@@ -1,14 +1,15 @@
 "use client";
 import { CustomButton, SectionTitle } from "@/components";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import toast from "react-hot-toast";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 import Link from "next/link";
 
-const SignUp = () => {
+
+const SignUpContent = () => {
   const [error, createError] = useState("");
   const router = useRouter();
   const sParams = useSearchParams();
@@ -161,4 +162,18 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+
+const SignUpPage = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white font-sans">
+        <span className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin mb-4"></span>
+        <p className="text-sm font-bold tracking-widest uppercase text-gray-400">Loading...</p>
+      </div>
+    }>
+      <SignUpContent />
+    </Suspense>
+  );
+};
+
+export default SignUpPage;

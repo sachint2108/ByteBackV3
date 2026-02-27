@@ -1,7 +1,7 @@
 "use client";
 import { EmailAddressFormat } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import toast from "react-hot-toast";
 import { auth, db } from "@/firebase/config";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -9,7 +9,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 
-const LoginPage = () => {
+const LoginContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState("");
@@ -167,6 +167,19 @@ const LoginPage = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const LoginPage = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white font-sans">
+        <span className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin mb-4"></span>
+        <p className="text-sm font-bold tracking-widest uppercase text-gray-400">Loading</p>
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   );
 };
 
