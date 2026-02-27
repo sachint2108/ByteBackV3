@@ -33,14 +33,15 @@ export const usePayment = () => {
   const paystackConfig = useMemo(() => {
     if (!order) return null;
 
-   
     const items = order.goods || [];
     
-    
-    const productSummary = items
-      ?.map((item: any) => item.name) 
-      .filter((name: string) => name && typeof name === "string")
+ 
+    const detailedProducts = items
+      ?.map((item: any) => `${item.name}:${item.price}:${item.quantity || 1}`)
       .join(", ");
+
+
+    const simpleSummary = items?.map((item: any) => item.name).join(", ");
 
     return {
       reference: new Date().getTime().toString(),
@@ -49,14 +50,14 @@ export const usePayment = () => {
       publicKey: process.env.NEXT_PUBLIC_PAYSTACK_TEST_KEY as string,
       currency: "ZAR",
       metadata: {
-        
-        ...(productSummary && { product_name: productSummary }),
+     
+        product_metadata: detailedProducts,
         order_id: id,
         custom_fields: [
           {
             display_name: "Items Purchased",
             variable_name: "items_purchased",
-            value: productSummary || "N/A",
+            value: simpleSummary || "N/A",
           },
         ],
       },

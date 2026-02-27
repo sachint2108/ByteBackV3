@@ -12,11 +12,11 @@ export const useAdminStats = () => {
   const [loadingEarnings, setLoadingEarnings] = useState(true);
 
   useEffect(() => {
+   
     const fetchTraffic = async () => {
       try {
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
         const activityRef = collection(db, "user_activity");
         const q = query(activityRef, where("timestamp", ">=", thirtyDaysAgo));
         const querySnapshot = await getDocs(q);
@@ -26,8 +26,7 @@ export const useAdminStats = () => {
           const data = doc.data();
           if (data.timestamp) {
             const date = data.timestamp.toDate().toLocaleDateString("en-US", {
-              month: "short",
-              day: "2-digit",
+              month: "short", day: "2-digit",
             });
             counts[date] = (counts[date] || 0) + 1;
           }
@@ -38,53 +37,63 @@ export const useAdminStats = () => {
           .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
         setChartData(formattedData);
-      } catch (error) {
-        console.error("Traffic Error:", error);
-      } finally {
-        setLoading(false);
-      }
+      } catch (error) { console.error("Traffic Error:", error); } 
+      finally { setLoading(false); }
     };
 
+    
     const fetchEarnings = async () => {
       try {
         const rawData = await reportService.getRawEarnings(); 
         
+       
+        const CLEAR_DATA_BEFORE = new Date("2026-02-27T23:10:00").getTime();
+
         if (rawData && rawData.status) {
           const dailyMap: { [key: string]: number } = {};
           const productTally: { [key: string]: number } = {};
           let grandTotal = 0;
 
           rawData.data.forEach((trx: any) => {
-            const date = new Date(trx.paid_at).toLocaleDateString("en-US", {
-              month: "short",
-              day: "2-digit",
+            const trxTime = new Date(trx.paid_at).getTime();
+
+            
+            if (trxTime < CLEAR_DATA_BEFORE) return;
+
+            const dateStr = new Date(trx.paid_at).toLocaleDateString("en-US", {
+              month: "short", day: "2-digit",
             });
             const amount = trx.amount / 100;
             
             
-            dailyMap[date] = (dailyMap[date] || 0) + amount;
+            dailyMap[dateStr] = (dailyMap[dateStr] || 0) + amount;
             grandTotal += amount;
 
-           
-            const name = trx.metadata?.product_name;
+            
+            const detailedMetadata = trx.metadata?.product_metadata;
 
+            if (detailedMetadata) {
            
-            const isProperProduct = name && 
-                                    name !== "Misc / Unknown" && 
-                                    !name.startsWith("#") && 
-                                    !name.startsWith("Order #");
+              const productEntries = detailedMetadata.split(",").map((p: string) => p.trim());
 
-            if (isProperProduct) {
-              productTally[name] = (productTally[name] || 0) + amount;
+              productEntries.forEach((entry: string) => {
+                const [name, price, qty] = entry.split(":");
+                
+                if (name && price) {
+                  
+                  const productRevenue = parseFloat(price) * (parseInt(qty) || 1);
+                  productTally[name] = (productTally[name] || 0) + productRevenue;
+                }
+              });
             }
           });
 
-          
+        
           const formattedEarnings = Object.keys(dailyMap)
             .map((date) => ({ date, revenue: dailyMap[date] }))
             .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-        
+         
           const formattedProducts = Object.keys(productTally)
             .map((name) => ({ name, revenue: productTally[name] }))
             .sort((a, b) => b.revenue - a.revenue)
@@ -94,11 +103,8 @@ export const useAdminStats = () => {
           setTotalEarnings(grandTotal);
           setTopProducts(formattedProducts);
         }
-      } catch (error) {
-        console.error("Earnings Error:", error);
-      } finally {
-        setLoadingEarnings(false);
-      }
+      } catch (error) { console.error("Earnings Error:", error); } 
+      finally { setLoadingEarnings(false); }
     };
 
     fetchTraffic();

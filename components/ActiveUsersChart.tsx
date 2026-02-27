@@ -17,11 +17,15 @@ const ActiveUsersChart = ({ data, dataKey = "count", color = "#000", type = "lin
     <div className="w-full h-[300px] mt-4">
       <ResponsiveContainer width="100%" height="100%">
         {type === "horizontal-bar" ? (
+          
+          
+          
+          
           /* TOP PRODUCTS: HORIZONTAL BAR GRAPH */
           <BarChart 
             data={data} 
             layout="vertical" 
-            margin={{ left: 30, right: 60, top: 10, bottom: 10 }}
+            margin={{ left: 30, right: 80, top: 10, bottom: 10 }}
           >
             <XAxis type="number" hide /> 
             <YAxis 
@@ -29,24 +33,36 @@ const ActiveUsersChart = ({ data, dataKey = "count", color = "#000", type = "lin
               type="category" 
               axisLine={false} 
               tickLine={false}
-              width={120}
+              width={140}
+             
+             
+             
+             
+           
+              tickFormatter={(value) => 
+                value.length > 20 ? `${value.substring(0, 20)}...` : value
+              }
               tick={{ fontSize: 10, fontWeight: '900', fill: '#111' }}
             />
             <Tooltip 
               cursor={{ fill: 'transparent' }}
               formatter={(value: any) => `R ${Number(value).toLocaleString()}`}
-              contentStyle={{ borderRadius: '15px', border: 'none', fontWeight: '900', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}
+              contentStyle={{ 
+                borderRadius: '15px', 
+                border: 'none', 
+                fontWeight: '900', 
+                boxShadow: '0 10px 30px rgba(0,0,0,0.05)' 
+              }}
             />
             <Bar 
               dataKey={dataKey} 
               fill={color} 
               radius={[0, 10, 10, 0]} 
               barSize={20}
-
               label={{ 
                 position: 'right', 
                 formatter: (val: any) => `R ${val.toLocaleString()}`,
-                fontSize: 11,
+                fontSize: 10,
                 fontWeight: '900',
                 fill: '#111',
                 dx: 10
@@ -54,6 +70,7 @@ const ActiveUsersChart = ({ data, dataKey = "count", color = "#000", type = "lin
             />
           </BarChart>
         ) : type === "bar" ? (
+          
           
           
           
@@ -86,9 +103,6 @@ const ActiveUsersChart = ({ data, dataKey = "count", color = "#000", type = "lin
             />
           </BarChart>
         ) : (
-          
-          
-          
           
           
           
