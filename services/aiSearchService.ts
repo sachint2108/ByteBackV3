@@ -20,7 +20,8 @@ export async function aiSmartSearch(userQuery: string) {
           name: data.name || "",
           price: Number(data.price) || 0,
           category: data.category || "",
-          description: data.description || "" 
+          description: data.description || "",
+          tags: data.tags || [],
         };
       })
       .filter(Boolean);
@@ -39,6 +40,7 @@ export async function aiSmartSearch(userQuery: string) {
       - Budget constraints (e.g., "under 15k" means price <= 15000)
       - Specs (e.g., storage sizes like 256GB, RAM, camera quality)
       - Brand or Category (e.g., "phone", "laptop", "Apple", "Samsung")
+      - Product Tags (e.g., match queries like "sale", "refurbished", "best seller", or "grade A" to the tags array)
 
       Find the top products that best match their request. 
       Return ONLY a valid JSON array of the matching product IDs, ordered from best match to worst. 

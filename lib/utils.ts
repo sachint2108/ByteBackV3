@@ -3,19 +3,19 @@ export const categoryMenuList = [
     id: 1,
     title: "IPhones",
     src: "/smart phone icon.png",
-    href: "/shop/smart-phones"
+    href: "/shop?categories=phone"
   },
   {
     id: 2,
     title: "Ipads",
     src: "/tablet icon.png",
-    href: "/shop/tablets"
+    href: "shop?categories=tablet"
   },
   {
     id: 6,
     title: "Laptops",
     src: "/laptop icon.png",
-    href: "/shop/laptops"
+    href: "/shop?categories=laptop"
   },
 ];
 

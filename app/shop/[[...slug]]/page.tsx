@@ -4,6 +4,8 @@ import {
 } from "@/components";
 import React from "react";
 
+
+
 export const dynamic = "force-dynamic";
 
 const ShopPage = async ({ 

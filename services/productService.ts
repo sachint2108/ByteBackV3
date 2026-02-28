@@ -86,6 +86,19 @@ export const productService = {
 
   },
 
+  getProductsByTag: async (tagToFind: string) => {
+    try {
+      const allProducts = await productService.getAllProducts();
+      
+      return allProducts.filter((product: any) => 
+        product.tags && product.tags.some((tag: string) => tag.toUpperCase() === tagToFind.toUpperCase())
+      );
+    } catch (error) {
+      console.error(`Error fetching products by tag (${tagToFind}):`, error);
+      return [];
+    }
+  },
+
 };
 
 
