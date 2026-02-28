@@ -1,3 +1,14 @@
+//Not uses Traditional Controller Pattern
+//This is Direct route mapping
+//The productServices provides an https get
+//Map get is getting it from the API on Render
+//How it ties together:
+//React says: "I need products."
+//HTTP GET carries that message across the internet.
+//C# MapGet catches the message and talks to Firestore.
+//Firestore sends the data back to C#.
+//C# sends the JSON back to React.
+
 using Google.Cloud.Firestore;
 using Microsoft.AspNetCore.Http; // this is included already behind the scences
 
