@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { FaHeart, FaRegHeart } from "react-icons/fa6";
 import { useWishlist } from "@/context/WishListContext";
 
@@ -17,12 +16,24 @@ const ProductItem = ({
 
   return (
     <div className="group relative flex flex-col w-full">
-      
-      
 
       <div className="relative w-full aspect-square bg-white rounded-[2.5rem] overflow-hidden transition-all duration-700 ease-out group-hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] group-hover:scale-[1.02]">
         
 
+        {product.tags && product.tags.length > 0 && (
+          <div className="absolute top-6 left-6 z-20 flex flex-col gap-2 pointer-events-none">
+
+            {product.tags.slice(0, 2).map((tag: string, index: number) => (
+              <span 
+                key={index} 
+                className="bg-black/90 text-white px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.2em] shadow-sm backdrop-blur-md"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+        
         <button
           onClick={(e) => {
             e.preventDefault();
@@ -36,8 +47,7 @@ const ProductItem = ({
             <FaRegHeart className="text-gray-900 text-lg" />
           )}
         </button>
-
-    
+        
         <Link href={`/product/${product.id}`} className="block w-full h-full p-8">
           <img
             src={product.imageUrl || "/product_placeholder.jpg"}
@@ -69,7 +79,6 @@ const ProductItem = ({
           </p>
         </div>
         
-
         <span className="text-[10px] font-black uppercase tracking-widest text-gray-300">
           {product.category || "Verified Tech"} • {product.condition || "Pristine"}
         </span>

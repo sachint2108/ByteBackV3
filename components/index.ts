@@ -25,7 +25,6 @@ export { default as ProductTabs } from "./ProductTabs";
 export { default as CustomButton } from "./CustomButton";
 export { default as QuantityInputCart } from "./QuantityInputCart";
 export { default as AddToCartSingleProductBtn } from "./AddToCartSingleProductBtn";
-export { default as BuyNowSingleProductBtn } from "./BuyNowSingleProductBtn";
 export { default as SingleProductDynamicFields } from "./SingleProductDynamicFields";
 export { default as CartElement } from "./CartElement";
 
@@ -38,7 +37,6 @@ export { default as Hero } from "./Hero";
 export { default as IntroducingSection } from "./IntroducingSection";
 export { default as Heading } from "./Heading";
 export { default as DashboardSidebar } from "./DashboardSidebar";
-export { default as StatsElement } from "./Report1";
 export { default as DashboardProductTable } from "./DashboardProductTable";
 export { default as AdminOrders } from "./AdminOrders";
 export { default as OrderItem } from "./OrderItem";

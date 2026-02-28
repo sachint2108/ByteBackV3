@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Http; // this is included already behind the scences
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowFrontend", policy => {
         policy.WithOrigins("http://localhost:3000", "https://bytebackv3.onrender.com") 
@@ -12,7 +10,6 @@ builder.Services.AddCors(options => {
               .AllowAnyMethod();
     });
 });
-
 
 builder.Services.AddSingleton<FirestoreDb>(s => {
     string projectId = "byteback-6bb5d"; 
@@ -35,7 +32,6 @@ builder.Services.AddSingleton<FirestoreDb>(s => {
 var app = builder.Build();
 
 app.UseCors("AllowFrontend");
-
 
 app.MapGet("/api/products", async (FirestoreDb db) => {
     try {
@@ -74,8 +70,6 @@ app.MapGet("/api/products/{id}", async (string id, FirestoreDb db) => {
     }
 });
 
-    
-
 app.MapPost("/api/products", async (ProductDto nProduct, FirestoreDb db) => {
     try 
     {
@@ -90,7 +84,8 @@ app.MapPost("/api/products", async (ProductDto nProduct, FirestoreDb db) => {
             { "condition", nProduct.condition },
             { "isSold", nProduct.isSold },
             { "imageUrl", nProduct.imageUrl },
-            { "description", nProduct.description }
+            { "description", nProduct.description },
+            { "tags", nProduct.tags ?? new List<string>() }
         };
 
         var docRef = await collection.AddAsync(productData);
@@ -119,7 +114,8 @@ app.MapPut("/api/products/{id}", async (string id, ProductDto updatedProduct, Fi
             { "condition", updatedProduct.condition },
             { "isSold", updatedProduct.isSold },
             { "imageUrl", updatedProduct.imageUrl },
-            { "description", updatedProduct.description }
+            { "description", updatedProduct.description },
+            { "tags", updatedProduct.tags ?? new List<string>() }
         };
 
         await collection.SetAsync(productData, SetOptions.MergeAll);
@@ -129,31 +125,22 @@ app.MapPut("/api/products/{id}", async (string id, ProductDto updatedProduct, Fi
     {
         return Results.Problem($"Firestore Error: {ex.Message}");
     }
-
-
-
-
-    
 });
 
 app.MapDelete("/api/products/{id}", async (string id, FirestoreDb db) =>{
-try {
-    var refDoc = db.Collection("Products").Document(id);
-    var snapshot = await refDoc.GetSnapshotAsync();
+    try {
+        var refDoc = db.Collection("Products").Document(id);
+        var snapshot = await refDoc.GetSnapshotAsync();
 
-    if(!snapshot.Exists) return Results.NotFound(new{message = "Product not found"});
+        if(!snapshot.Exists) return Results.NotFound(new{message = "Product not found"});
 
-    await refDoc.DeleteAsync();
-    return Results.Ok(new { message = "Product deleted" });
-}
-catch (Exception err)
+        await refDoc.DeleteAsync();
+        return Results.Ok(new { message = "Product deleted" });
+    }
+    catch (Exception err)
     {
         return Results.Problem($"Error with Firestore: {err.Message}");
     }
-    
-
-
-
 });
 
 
@@ -186,10 +173,8 @@ app.MapGet("/api/reports/user-activity", async (FirestoreDb db) => {
 
 app.Run();
 
-
-
 public class ProductDto 
-    {
+{
     public string id { get; set; } = "";        
     public string name { get; set; } = "";
     public double price { get; set; }
@@ -198,11 +183,5 @@ public class ProductDto
     public bool isSold { get; set; }
     public string imageUrl { get; set; } = "";
     public string description { get; set; } = "";
-    }
-
-//Cors Policy to allow requests from the React frontend, both locally and on Render. 
-//Adjust the URLs as needed for your deployment.
-// Not using controllers, rather usig something that catches web request and talks to firebase direclty
-// I did this so that I don't have to have soo many folders and things stay in one place
-// It speeds up the becuase it used less memory
-// I preffred to use the built map methods from microsoft so I can route web traffic with needing controller classes
+    public List<string> tags { get; set; } = new List<string>(); 
+}

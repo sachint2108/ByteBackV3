@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { productService } from "@/services/productService";
 import { DashboardSidebar } from "@/components";
+import TagInput from "@/components/TagInput"; // <--- Import the TagInput component here
 import toast from "react-hot-toast";
 
 const EditProductPage = () => {
@@ -19,6 +20,7 @@ const EditProductPage = () => {
     isSold: false,
     imageUrl: "",
     description: "",
+    tags: [] as string[], // <--- Added tags state
   });
 
   // Fetch current data while on load
@@ -26,7 +28,8 @@ const EditProductPage = () => {
     const fetchProduct = async () => {
       try {
         const data = await productService.getProductById(id as string);
-        setProduct(data);
+        // Safely set tags, defaulting to an empty array if older products don't have any
+        setProduct({ ...data, tags: data.tags || [] }); 
       } catch (error) {
         toast.error("Could not Load Product Details. Please Try Again.");
       } finally {
@@ -95,11 +98,6 @@ const EditProductPage = () => {
             </button>
           </header>
           
-          
-          
-          
-          
-          
           {/* Main Form Container */}
           <div className="bg-white/70 backdrop-blur-xl p-10 rounded-[2.5rem] border border-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col gap-10">
             
@@ -126,10 +124,6 @@ const EditProductPage = () => {
               </div>
             </section>
 
-            
-            
-            
-            
             {/* Price & Category Group */}
             <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
@@ -160,9 +154,6 @@ const EditProductPage = () => {
               </div>
             </section>
 
-            
-            
-            
             {/* Condition & Status */}
             <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
@@ -191,9 +182,6 @@ const EditProductPage = () => {
               </div>
             </section>
 
-            
-            
-            
             {/* Image Link & Visual Preview */}
             <section className="space-y-4">
               <div className="space-y-2">
@@ -221,7 +209,14 @@ const EditProductPage = () => {
               )}
             </section>
 
-            
+            {/* TAG INPUT SECTION*/}
+            <section className="space-y-2">
+              <TagInput 
+                tags={product.tags} 
+                setTags={(newTags) => setProduct({ ...product, tags: newTags })} 
+              />
+            </section>
+
             {/* Product Story/Description */}
             <section className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Product Description</label>
@@ -232,7 +227,6 @@ const EditProductPage = () => {
               ></textarea>
             </section>
 
-            
             
             
             {/* Action Bar */}

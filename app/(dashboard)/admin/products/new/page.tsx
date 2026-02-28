@@ -5,11 +5,12 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { productService } from "@/services/productService";
 import { useRouter } from "next/navigation";
+import TagInput from "@/components/TagInput"; 
 
 const AddNewProduct = () => {
   const router = useRouter();
   
-//Fields from Firbase Database
+
   const [product, setProduct] = useState({
     id: "",           
     name: "",          
@@ -19,6 +20,7 @@ const AddNewProduct = () => {
     isSold: false,     
     imageUrl: "",      
     description: "",
+    tags: [] as string[], 
   });
 
   const addProduct = async () => {
@@ -38,7 +40,8 @@ const AddNewProduct = () => {
         condition: product.condition,
         isSold: product.isSold,
         imageUrl: product.imageUrl,
-        description: product.description
+        description: product.description,
+        tags: product.tags 
       };
 
       await productService.createProduct(productPayload);
@@ -182,6 +185,14 @@ const AddNewProduct = () => {
               )}
             </section>
 
+            {/* TAG INPUT SECTION*/}
+            <section className="w-full">
+              <TagInput 
+                tags={product.tags} 
+                setTags={(newTags) => setProduct({ ...product, tags: newTags })} 
+              />
+            </section>
+
             {/* Description */}
             <section className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Description</label>
@@ -215,7 +226,5 @@ const AddNewProduct = () => {
     </div>
   );
 };
-
-
 
 export default AddNewProduct;
