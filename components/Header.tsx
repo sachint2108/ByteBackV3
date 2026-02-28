@@ -48,9 +48,8 @@ const Header = () => {
   ];
 
   return (
-    <header className="bg-gradient-to-l from-white to-black-600">
+    <header className="bg-gradient-to-l from-white to-gray-900">
       <HeaderTop />
-      
       <div className="max-w-screen-2xl mx-auto px-4 md:px-12 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
         
         {/* LEFT: Logo & Back Button */}

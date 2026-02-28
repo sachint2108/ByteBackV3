@@ -11,7 +11,7 @@ const ProductsSection = async () => {
 
   return (
 
-    <div className="bg-gradient-to-l from-white to-black-600 py-20">
+    <div className="bg-gradient-to-l from-white to-gray-900 py-20">
       <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">
         
     
