@@ -59,6 +59,22 @@ const LoginContent = () => {
       console.error("Login Process Failed:", err);
       setError(err.message || "Failed to Verify Credentials");
       toast.dismiss();
+
+
+      if (err.code === "auth/invalid-credential") {
+        const msg = "Incorrect email or password. Please try again.";
+        setError(msg);
+        toast.error(msg);
+      } else if (err.code === "auth/too-many-requests") {
+        const msg = "Too many failed attempts. Account temporarily locked.";
+        setError(msg);
+        toast.error(msg);
+      } else {
+        const msg = "An error occurred during sign-in. Please try again.";
+        setError(msg);
+        toast.error(msg);
+      }
+
     }
   };
 
